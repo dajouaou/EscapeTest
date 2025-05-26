@@ -2,8 +2,6 @@ package org.example;
 
 import java.sql.*;
 
-import java.sql.DriverManager.*;
-
 import static java.sql.DriverManager.getConnection;
 
 public class DatabaseManager {
@@ -11,13 +9,7 @@ public class DatabaseManager {
     private final String user = "root";
     private final String password = "1234";
 
-    public DatabaseManager() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+
 // ALS WAT FOUT GAAT MET DATABASE CHECK FF HIERZO GIRLYPOPS YAAAAAAAAAA
     public boolean registreerSpeler(String gebruikersnaam, String wachtwoord) {
         String query = "INSERT INTO speler (gebruikersnaam, wachtwoord, status, huidige_kamer_nummer) VALUES (?, ?, 'Nieuw', 1)";
