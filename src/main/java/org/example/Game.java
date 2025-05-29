@@ -14,6 +14,8 @@ public class Game {
 
     public Game(String gebruikersnaam, DatabaseManager dbManager, Scanner scanner) {
         this.speler = new Speler(gebruikersnaam);
+        speler.addGameObserver(new Monster(new DeadlinePressure()));
+        speler.addGameObserver(new Deur());
         this.dbManager = dbManager;
         this.scanner = scanner;
 

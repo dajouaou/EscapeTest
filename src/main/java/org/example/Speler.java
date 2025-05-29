@@ -119,4 +119,19 @@ public class Speler {
         }
         return false;
     }
+    // === GameObserver functionaliteit ===
+    private final List<GameObserver> gameObservers = new ArrayList<>();
+
+    public void addGameObserver(GameObserver observer) {
+        if (observer != null) {
+            gameObservers.add(observer);
+        }
+    }
+
+    public void notifyGameObservers(String resultaat) {
+        for (GameObserver observer : gameObservers) {
+            observer.update(resultaat);
+        }
+    }
+
 }
