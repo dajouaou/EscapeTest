@@ -11,15 +11,21 @@ public class Game {
     private CLI cli;
     private DatabaseManager dbManager;
     private Scanner scanner;
+    private TimerPopup timer; // ⏳ Nieuw toegevoegd
 
     public Game(String gebruikersnaam, DatabaseManager dbManager, Scanner scanner) {
         this.speler = new Speler(gebruikersnaam);
-        speler.addGameObserver(new Monster(new DeadlinePressure()));
-        speler.addGameObserver(new Deur());
         this.dbManager = dbManager;
         this.scanner = scanner;
 
-        // slayyyy kamerobjecten toevoegen (kan vervangen worden door KamerFactory voor OCP)
+        speler.addGameObserver(new Monster(new DeadlinePressure()));
+        speler.addGameObserver(new Monster(new TechnicalDebt()));
+        speler.addGameObserver(new Monster(new ScopeCreep()));
+        speler.addGameObserver(new Monster(new Tiktakulus()));
+        speler.addGameObserver(new Deur());
+
+
+        // 🧱 Kamerobjecten aanmaken
         kamers.add(new SprintPlanningKamer(speler));
         kamers.add(new DailyScrumKamer(speler, dbManager, scanner));
         kamers.add(new ScrumBoardKamer(speler, scanner));
