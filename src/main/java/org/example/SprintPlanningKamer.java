@@ -95,9 +95,11 @@ public class SprintPlanningKamer extends Kamer {
                 if (antwoordChar >= 'A' && antwoordChar <= 'D') {
                     if (antwoordChar == juisteAntwoord) {
                         System.out.println("✅ Correct!");
+                        speler.notifyGameObservers("goed");
                         return true;
                     } else {
                         System.out.println("❌ Fout!");
+                        speler.notifyGameObservers("fout");
                         monsterVerschijnt();
                         if (!foutBeantwoordeVragen.contains(vraagNr)) {
                             foutBeantwoordeVragen.add(vraagNr);

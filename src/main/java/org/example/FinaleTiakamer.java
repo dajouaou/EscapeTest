@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.GridLayout;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class FinaleTiakamer extends Kamer {
@@ -95,9 +94,11 @@ public class FinaleTiakamer extends Kamer {
             char antwoord = wachtOpAntwoord(scanner);
             if (antwoord == v.getCorrectAntwoord()) {
                 System.out.println("✅ Correct!");
+                speler.notifyGameObservers("goed");  // Observer pattern: monster weg, deur open
                 correcteAntwoorden++;
             } else {
                 System.out.println("❌ Fout. Het juiste antwoord was: " + v.getCorrectAntwoord());
+                speler.notifyGameObservers("fout");  // Observer pattern: monster verschijnt, deur blijft dicht
             }
         }
 

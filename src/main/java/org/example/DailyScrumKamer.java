@@ -42,9 +42,10 @@ public class DailyScrumKamer extends Kamer {
             char antwoordChar = vraagAntwoord();
             if (antwoordChar == vraag.getCorrectAntwoord()) {
                 System.out.println("✅ Correct!\n");
+                speler.notifyGameObservers("goed");
             } else {
                 System.out.println("❌ Fout!");
-                monsterVerschijnt();
+                speler.notifyGameObservers("fout");
                 foutBeantwoordeVragen.add(i);
             }
         }
@@ -77,9 +78,10 @@ public class DailyScrumKamer extends Kamer {
                 char antwoordChar = vraagAntwoord();
                 if (antwoordChar == vraag.getCorrectAntwoord()) {
                     System.out.println("✅ Correct!\n");
+                    speler.notifyGameObservers("goed");
                 } else {
                     System.out.println("❌ Nog steeds fout.");
-                    monsterVerschijnt();
+                    speler.notifyGameObservers("fout");
                     nogSteedsFout.add(index);
                 }
             }
@@ -109,9 +111,5 @@ public class DailyScrumKamer extends Kamer {
             }
             System.out.println("Ongeldige invoer. Voer A, B, C of D in.");
         }
-    }
-
-    private void monsterVerschijnt() {
-        System.out.println("💀 Vertraging verschijnt! Het monster gromt: 'Tijdverspilling leidt tot vertraging!'\n");
     }
 }

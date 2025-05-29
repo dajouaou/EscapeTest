@@ -38,8 +38,10 @@ public class ScrumBoardKamer extends Kamer {
             char antwoord = vraagAntwoord();
             if (antwoord == vraag.getCorrectAntwoord()) {
                 System.out.println("✅ Correct!\n");
+                speler.notifyGameObservers("goed");
             } else {
                 System.out.println("❌ Fout antwoord.\n");
+                speler.notifyGameObservers("fout");
                 foutBeantwoordeVragen.add(i);
             }
         }
@@ -72,8 +74,10 @@ public class ScrumBoardKamer extends Kamer {
                 char antwoord = vraagAntwoord();
                 if (antwoord == vraag.getCorrectAntwoord()) {
                     System.out.println("✅ Correct!\n");
+                    speler.notifyGameObservers("goed");
                 } else {
                     System.out.println("❌ Nog steeds fout.\n");
+                    speler.notifyGameObservers("fout");
                     nogFout.add(index);
                 }
             }
