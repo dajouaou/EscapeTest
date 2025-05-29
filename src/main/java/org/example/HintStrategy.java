@@ -1,6 +1,6 @@
 package org.example;
 
-//hintstrategy jatochhhh we gon get that A++++
+//hintstrategy jatochhhh we gonna get that A++++
 
 public interface HintStrategy {
     String geefHint();

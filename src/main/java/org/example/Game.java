@@ -18,11 +18,16 @@ public class Game {
         this.dbManager = dbManager;
         this.scanner = scanner;
 
-        speler.addGameObserver(new Monster(new DeadlinePressure()));
-        speler.addGameObserver(new Monster(new TechnicalDebt()));
-        speler.addGameObserver(new Monster(new ScopeCreep()));
-        speler.addGameObserver(new Monster(new Tiktakulus()));
+        speler.addGameObserver(new Monster(new ScopeCreep(), "Sprint Planning", speler));
+        speler.addGameObserver(new Monster(new Vertraging(), "Daily Scrum", speler));
+        speler.addGameObserver(new Monster(new TechnicalDebt(), "Scrum Board", speler));
+        speler.addGameObserver(new Monster(new Miscommunicatie(), "Sprint Review", speler));
+        speler.addGameObserver(new Monster(new BlindeVlek(), "Sprint Retrospective", speler));
+        speler.addGameObserver(new Monster(new TiaMonster(), "Finale TIA Kamer", speler));
+
+
         speler.addGameObserver(new Deur());
+
 
 
         // 🧱 Kamerobjecten aanmaken

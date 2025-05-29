@@ -2,6 +2,6 @@ package org.example;
 
 import java.util.List;
 
-public interface VraagStrategie {
+public interface VraagStrategieen {
     List<Vraag> getVragen();
 }
