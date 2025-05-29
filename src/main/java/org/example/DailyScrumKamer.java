@@ -112,4 +112,5 @@ public class DailyScrumKamer extends Kamer {
             System.out.println("Ongeldige invoer. Voer A, B, C of D in.");
         }
     }
+
 }
