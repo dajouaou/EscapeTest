@@ -1,14 +1,14 @@
 package org.example;
 
-class Monster {
-    private MonsterGedrag gedrag;
+public class Monster implements GameObserver {
+    private final MonsterGedrag gedrag;
 
     public Monster(MonsterGedrag gedrag) {
         this.gedrag = gedrag;
     }
 
     public void versperWeg() {
-        gedrag.reageer();
+        gedrag.reageer();  // Monster laat zijn gedrag zien
     }
 
     public String getNaam() {
@@ -17,5 +17,14 @@ class Monster {
 
     public String toonFoutmelding() {
         return gedrag.toString();
+    }
+
+    @Override
+    public void update(String resultaat) {
+        if ("fout".equalsIgnoreCase(resultaat)) {
+            versperWeg(); // Monster verschijnt automatisch
+        } else {
+            System.out.println("👹 Monster verdwijnt.");
+        }
     }
 }

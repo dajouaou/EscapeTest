@@ -1,6 +1,6 @@
 package org.example;
 
-interface MonsterGedrag {
+public interface MonsterGedrag {
     void reageer();
 
     String toString();

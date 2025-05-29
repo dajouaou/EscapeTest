@@ -2,7 +2,7 @@ package org.example;
 
 import java.util.*;
 
-public class Speler {
+public class Speler implements GameObserver{
     private final String naam;
     private int huidigeKamer = 0;
     private final Set<Integer> kamersGehaald = new HashSet<>();
@@ -119,4 +119,32 @@ public class Speler {
         }
         return false;
     }
+    // === GameObserver functionaliteit ===
+    private final List<GameObserver> gameObservers = new ArrayList<>();
+
+    public void addGameObserver(GameObserver observer) {
+        if (observer != null) {
+            gameObservers.add(observer);
+        }
+    }
+
+    public void notifyGameObservers(String resultaat) {
+        for (GameObserver observer : gameObservers) {
+            observer.update(resultaat);
+        }
+    }
+    public interface GameSubject {
+        void addObserver(GameObserver o);
+        void notifyObservers(String resultaat);
+    }
+    @Override
+    public void update(String resultaat) {
+        if ("fout".equals(resultaat)) {
+            setMonster(new Monster(new DeadlinePressure()));
+            setMonster(new Monster(new Tiktakulus()));
+            setMonster(new Monster(new ScopeCreep()));
+            setMonster(new Monster(new TechnicalDebt()));
+        }
+    }
+
 }

@@ -38,9 +38,11 @@ public class SprintRetrospectiveKamer extends Kamer {
             if (antwoord == vraag.getCorrectAntwoord()) {
                 System.out.println("✅ Correct!\n");
                 vragenCorrect[i] = true;
+                speler.notifyGameObservers("goed");
             } else {
                 System.out.println("❌ Fout antwoord.\n");
                 vragenCorrect[i] = false;
+                speler.notifyGameObservers("fout");
             }
         }
 
@@ -73,8 +75,10 @@ public class SprintRetrospectiveKamer extends Kamer {
                     if (antwoord == vraag.getCorrectAntwoord()) {
                         System.out.println("✅ Correct!\n");
                         vragenCorrect[i] = true;
+                        speler.notifyGameObservers("goed");
                     } else {
                         System.out.println("❌ Nog steeds fout.\n");
+                        speler.notifyGameObservers("fout");
                     }
                 }
             }

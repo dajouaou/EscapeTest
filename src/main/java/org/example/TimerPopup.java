@@ -2,14 +2,18 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TimerPopup {
+public class TimerPopup implements Speler.GameSubject {
     private JFrame frame;
     private JLabel timerLabel;
     private Timer timer;
     private int seconden;
+
+    private final List<GameObserver> observers = new ArrayList<>();
 
     public TimerPopup(int seconden) {
         this.seconden = seconden;
@@ -26,7 +30,6 @@ public class TimerPopup {
 
         JPanel panel = new JPanel();
         panel.setBackground(new Color(245, 245, 245));
-
         panel.setLayout(new BorderLayout());
 
         JLabel iconLabel = new JLabel("⏳", SwingConstants.CENTER);
@@ -42,7 +45,7 @@ public class TimerPopup {
         frame.setVisible(true);
     }
 
-    private void startTimer() {
+   public void startTimer() {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -55,6 +58,7 @@ public class TimerPopup {
                     }
                     if (seconden <= 0) {
                         stop();
+                        notifyObservers("fout");  // Notificeer de monsters
                         JOptionPane.showMessageDialog(null,
                                 "⏰ De tijd is op!\n💀 TikTakulus, de Tijdeter verschijnt uit het niets!",
                                 "Tijd Op", JOptionPane.WARNING_MESSAGE);
@@ -71,6 +75,20 @@ public class TimerPopup {
         }
         if (frame != null) {
             frame.dispose();
+        }
+    }
+
+    // Observer Pattern implementatie
+    @Override
+    public void addObserver(GameObserver o) {
+        observers.add(o);
+    }
+
+
+    @Override
+    public void notifyObservers(String resultaat) {
+        for (GameObserver o : observers) {
+            o.update(resultaat);
         }
     }
 }
