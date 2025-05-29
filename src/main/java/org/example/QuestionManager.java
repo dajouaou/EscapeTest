@@ -2,7 +2,7 @@ package org.example;
 
 public class QuestionManager {
 
-    public static VraagStrategie getStrategieVoorKamer(int kamerNr) {
+    public static VraagStrategieen getStrategieVoorKamer(int kamerNr) {
         return switch (kamerNr) {
             case 1 -> new SprintPlanningVragen();
             case 2 -> new DailyScrumVragen();

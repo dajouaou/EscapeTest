@@ -2,7 +2,7 @@ package org.example;
 
 import java.util.*;
 
-public class Speler implements GameObserver{
+public class Speler {
     private final String naam;
     private int huidigeKamer = 0;
     private final Set<Integer> kamersGehaald = new HashSet<>();
@@ -137,14 +137,18 @@ public class Speler implements GameObserver{
         void addObserver(GameObserver o);
         void notifyObservers(String resultaat);
     }
-    @Override
-    public void update(String resultaat) {
-        if ("fout".equals(resultaat)) {
-            setMonster(new Monster(new DeadlinePressure()));
-            setMonster(new Monster(new Tiktakulus()));
-            setMonster(new Monster(new ScopeCreep()));
-            setMonster(new Monster(new TechnicalDebt()));
+
+    public String getKamerNaam() {
+        switch (huidigeKamer) {
+            case 1: return "Sprint Planning";
+            case 2: return "Daily Scrum";
+            case 3: return "Scrum Board";
+            case 4: return "Sprint Review";
+            case 5: return "Sprint Retrospective";
+            case 6: return "Finale TIA Kamer";
+            default: return "Onbekend";
         }
     }
+
 
 }
