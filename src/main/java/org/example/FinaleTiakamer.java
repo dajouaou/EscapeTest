@@ -14,6 +14,7 @@ public class FinaleTiakamer extends Kamer {
     private boolean timerGestart = false;
     private JFrame gui;
     private final Scanner scanner;
+    private VraagStrategie vraagStrategie;
 
     public FinaleTiakamer(Speler speler, Scanner scanner) {
         super(speler);
@@ -27,14 +28,14 @@ public class FinaleTiakamer extends Kamer {
                 System.exit(0);
             }
         });
+        this.vraagStrategie = new FinaleTiaVragen();
     }
 
     @Override
     public boolean start() {
-        setHintStrategy(new SimpeleHint()); // hint instellen👺
-        toonHint();                         // hint showen frfr🤔🤔🤔🤔🤔🤔🤔
-
-        return launchMinigame(); // alleen true als quiz gehaald is :33
+        setHintStrategy(new SimpeleHint());
+        toonHint();
+        return launchMinigame();
     }
 
     private boolean launchMinigame() {
@@ -44,7 +45,6 @@ public class FinaleTiakamer extends Kamer {
         gui.setLayout(new GridLayout(1, 3));
 
         final boolean[] resultaat = new boolean[1];
-
         JButton transparantieBtn = new JButton("Deur 1");
         transparantieBtn.addActionListener(e -> toonUitleg("Transparantie betekent dat iedereen volledige zichtbaarheid heeft in het werkproces."));
 
@@ -55,9 +55,9 @@ public class FinaleTiakamer extends Kamer {
         aanpassingBtn.addActionListener(e -> {
             toonUitleg("Aanpassing betekent dat op basis van inspectie het proces of werk kan worden aangepast.");
             gui.dispose();
-            resultaat[0] = startFinaleVragen();  // sla op of speler geslaagd is
+            resultaat[0] = startFinaleVragen();
             synchronized (scanner) {
-                scanner.notify(); // om wait() te doorbreken purrr
+                scanner.notify();
             }
         });
 
@@ -66,7 +66,6 @@ public class FinaleTiakamer extends Kamer {
         gui.add(aanpassingBtn);
         gui.setVisible(true);
 
-        // wacht tot speler alle deuren heeft geklikt en vragen zijn gedaan <33
         synchronized (scanner) {
             try {
                 scanner.wait();
@@ -74,8 +73,7 @@ public class FinaleTiakamer extends Kamer {
                 e.printStackTrace();
             }
         }
-
-        return resultaat[0];  // true of false depends on quiz
+        return resultaat[0];
     }
 
     private void toonUitleg(String uitleg) {
@@ -83,56 +81,18 @@ public class FinaleTiakamer extends Kamer {
     }
 
     private boolean startFinaleVragen() {
-        List<Vraag> vragen = Arrays.asList(
-                new Vraag("Wat is Sprint Planning?", new String[]{
-                        "Een dagelijkse meeting",
-                        "Plannen van het werk voor de sprint",
-                        "Een terugblik",
-                        "Testfase"
-                }, 'B'),
-
-                new Vraag("Wat is het Scrum Board?", new String[]{
-                        "Een spreadsheet",
-                        "Een documentatiemap",
-                        "Een visueel hulpmiddel voor voortgang",
-                        "Een product backlog"
-                }, 'C'),
-
-                new Vraag("Wat gebeurt tijdens de Sprint Review?", new String[]{
-                        "Feedback verzamelen van stakeholders",
-                        "Testresultaten bekijken",
-                        "De sprintplanning doen",
-                        "Retrospective houden"
-                }, 'A'),
-
-                new Vraag("Wat is het doel van de Sprint Retrospective?", new String[]{
-                        "Sprintreview plannen",
-                        "Documentatie schrijven",
-                        "Reflecteren en verbeteren",
-                        "Nieuwe features bespreken"
-                }, 'C'),
-
-                new Vraag("Waar staat TIA voor binnen Scrum?", new String[]{
-                        "Taken, Inzichten, Acties",
-                        "Testen, Integreren, Afmaken",
-                        "Transparantie, Inspectie, Aanpassing",
-                        "Teams, Iteraties, Agile"
-                }, 'C')
-        );
-
+        List<Vraag> vragen = vraagStrategie.getVragen();
         int correcteAntwoorden = 0;
         timer.start();
         timerGestart = true;
 
-        for (int i = 0; i < vragen.size(); i++) {
-            Vraag v = vragen.get(i);
+        for (Vraag v : vragen) {
             System.out.println("\n" + v.getVraag());
             for (int j = 0; j < v.getOpties().length; j++) {
                 System.out.println((char) ('A' + j) + ") " + v.getOpties()[j]);
             }
 
             char antwoord = wachtOpAntwoord(scanner);
-
             if (antwoord == v.getCorrectAntwoord()) {
                 System.out.println("✅ Correct!");
                 correcteAntwoorden++;
@@ -153,24 +113,20 @@ public class FinaleTiakamer extends Kamer {
             try {
                 String gebruikersnaam = speler.getGebruikersnaam();
                 DatabaseManager dbManager = new DatabaseManager();
-
                 dbManager.voegVoltooideKamerToe(gebruikersnaam, 6);
                 dbManager.updateSpelerStatus(gebruikersnaam, "");
-
                 int totaalMunten = dbManager.getMunten(gebruikersnaam) + 300;
                 dbManager.updateMunten(gebruikersnaam, totaalMunten);
             } catch (SQLException e) {
                 e.printStackTrace();
                 System.out.println("Er is een fout opgetreden bij het opslaan van je voortgang of munten.");
             }
-
             return true;
         } else {
             System.out.println("❌ Je hebt niet genoeg vragen juist beantwoord. Probeer opnieuw.");
             return false;
         }
     }
-
 
     private char wachtOpAntwoord(Scanner scanner) {
         while (true) {
@@ -182,29 +138,4 @@ public class FinaleTiakamer extends Kamer {
             System.out.println("Ongeldige invoer. Probeer opnieuw.");
         }
     }
-
-    private static class Vraag {
-        private final String vraag;
-        private final String[] opties;
-        private final char correctAntwoord;
-
-        public Vraag(String vraag, String[] opties, char correctAntwoord) {
-            this.vraag = vraag;
-            this.opties = opties;
-            this.correctAntwoord = correctAntwoord;
-        }
-
-        public String getVraag() {
-            return vraag;
-        }
-
-        public String[] getOpties() {
-            return opties;
-        }
-
-        public char getCorrectAntwoord() {
-            return correctAntwoord;
-        }
-    }
-
 }
