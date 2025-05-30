@@ -1,12 +1,11 @@
 package org.example;
 
-// Interface
+
 interface MonsterGedrag {
     void reageer();
     String toString();
 }
 
-// 👹 Scope Creep
 class ScopeCreep implements MonsterGedrag {
     public void reageer() {
         System.out.println("👹 Scope Creep verschijnt! Te veel werk gepland.");
@@ -17,7 +16,6 @@ class ScopeCreep implements MonsterGedrag {
     }
 }
 
-// 🐌 Vertraging
 class Vertraging implements MonsterGedrag {
     public void reageer() {
         System.out.println("🐌 Vertraging verschijnt! Je vergeet een update.");
@@ -28,7 +26,6 @@ class Vertraging implements MonsterGedrag {
     }
 }
 
-// 💾 Technical Debt
 class TechnicalDebt implements MonsterGedrag {
     public void reageer() {
         System.out.println("💾 Technical Debt verschijnt! Slechte structuur.");
@@ -39,7 +36,6 @@ class TechnicalDebt implements MonsterGedrag {
     }
 }
 
-// 💬 Miscommunicatie
 class Miscommunicatie implements MonsterGedrag {
     public void reageer() {
         System.out.println("💬 Miscommunicatie verschijnt! Je begrijpt feedback verkeerd.");
@@ -50,7 +46,6 @@ class Miscommunicatie implements MonsterGedrag {
     }
 }
 
-// 🙈 Blinde Vlek
 class BlindeVlek implements MonsterGedrag {
     public void reageer() {
         System.out.println("🙈 Blinde Vlek verschijnt! Je leert niets van je fouten.");
@@ -61,7 +56,6 @@ class BlindeVlek implements MonsterGedrag {
     }
 }
 
-// 👾 TIA Monster
 class TiaMonster implements MonsterGedrag {
     public void reageer() {
         System.out.println("👾 TIA Monster verschijnt! Laatste test voor ontsnapping.");
@@ -71,3 +65,4 @@ class TiaMonster implements MonsterGedrag {
         return "Beantwoord alles goed en ontsnap aan het CGI-gebouw!";
     }
 }
+

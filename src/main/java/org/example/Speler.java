@@ -119,7 +119,6 @@ public class Speler {
         }
         return false;
     }
-    // === GameObserver functionaliteit ===
     private final List<GameObserver> gameObservers = new ArrayList<>();
 
     public void addGameObserver(GameObserver observer) {

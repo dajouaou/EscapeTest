@@ -53,3 +53,4 @@ public abstract class Kamer {
 
     public abstract boolean start(); // wordt opgeroepen in speelKamer()
 }
+

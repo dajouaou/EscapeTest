@@ -29,21 +29,18 @@ public class Game {
         speler.addGameObserver(new Deur());
 
 
-
-        // 🧱 Kamerobjecten aanmaken
-        kamers.add(new SprintPlanningKamer(speler));
-        kamers.add(new DailyScrumKamer(speler, dbManager, scanner));
-        kamers.add(new ScrumBoardKamer(speler, scanner));
-        kamers.add(new SprintReviewKamer(speler, scanner));
-        kamers.add(new SprintRetrospectiveKamer(speler, scanner));
-        kamers.add(new FinaleTiakamer(speler, scanner));
+        for (int i = 1; i <= 6; i++) {
+            kamers.add(KamerFactory.maakKamer(i, speler, dbManager, scanner));
+        }
     }
 
     public void setCLI(CLI cli) {
         this.cli = cli;
     }
 
-    public void toonStatus() {
+
+
+        public void toonStatus() {
         System.out.println("Huidige kamer: " + speler.getHuidigeKamer());
         System.out.println("Kamers gehaald: " + speler.getKamersGehaald());
         System.out.println(speler.heeftMonster() ? "Actieve belemmering: " + speler.getMonsterNaam() : "Geen actieve monsters.");
@@ -99,7 +96,8 @@ public class Game {
             case 3: return "Scrum Board";
             case 4: return "Sprint Review";
             case 5: return "Sprint Retrospective";
-            case 6: return "Finale TIA";
+            case 6: return "Voorwerpenkamer";
+            case 7: return "Finale TIA";
             default: return "Onbekende kamer";
         }
     }

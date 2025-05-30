@@ -9,8 +9,6 @@ public class CLI {
     private TimerPopup timerPopup;
     private Scanner scanner;
 
-    private static final int VRAAG_TIJD_MS = 3 * 60 * 1000;
-
     public CLI(Game game, Scanner scanner) {
         this.game = game;
         this.scanner = scanner;  // main scanner gebruiken ipv iedere keer nieuwe scanner yurr
@@ -65,9 +63,6 @@ public class CLI {
         System.out.println("==================");
     }
 
-    public void toonStatus(Speler speler) {
-        System.out.println("Status: " + speler.getStatus());
-    }
 
     public void startVraagTimer() {
         stopVraagTimer();
