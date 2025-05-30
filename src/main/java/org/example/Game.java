@@ -11,13 +11,14 @@ public class Game {
     private CLI cli;
     private DatabaseManager dbManager;
     private Scanner scanner;
-    private TimerPopup timer; // ⏳ Nieuw toegevoegd
+    private TimerPopup timer;
 
     public Game(String gebruikersnaam, DatabaseManager dbManager, Scanner scanner) {
         this.speler = new Speler(gebruikersnaam);
         this.dbManager = dbManager;
         this.scanner = scanner;
 
+        // Registreer monsters voor verschillende kamers
         speler.addGameObserver(new Monster(new ScopeCreep(), "Sprint Planning", speler));
         speler.addGameObserver(new Monster(new Vertraging(), "Daily Scrum", speler));
         speler.addGameObserver(new Monster(new TechnicalDebt(), "Scrum Board", speler));
@@ -25,10 +26,9 @@ public class Game {
         speler.addGameObserver(new Monster(new BlindeVlek(), "Sprint Retrospective", speler));
         speler.addGameObserver(new Monster(new TiaMonster(), "Finale TIA Kamer", speler));
 
-
         speler.addGameObserver(new Deur());
 
-
+        // Maak kamers aan met de nieuwe HintProvider
         for (int i = 1; i <= 7; i++) {
             kamers.add(KamerFactory.maakKamer(i, speler, scanner));
         }
@@ -38,9 +38,7 @@ public class Game {
         this.cli = cli;
     }
 
-
-
-        public void toonStatus() {
+    public void toonStatus() {
         System.out.println("Huidige kamer: " + speler.getHuidigeKamer());
         System.out.println("Kamers gehaald: " + speler.getKamersGehaald());
         System.out.println(speler.heeftMonster() ? "Actieve belemmering: " + speler.getMonsterNaam() : "Geen actieve monsters.");
@@ -57,7 +55,7 @@ public class Game {
             int huidigeKamer = dbManager.getHuidigeKamer(speler.getGebruikersnaam());
 
             if (nummer > 7) {
-                System.out.println("Deze kamer bestaat niet. Delulu ahh🩷");
+                System.out.println("Deze kamer bestaat niet.");
                 return;
             }
 
@@ -71,7 +69,7 @@ public class Game {
             dbManager.updateHuidigeKamer(speler.getGebruikersnaam(), nummer);
 
             Kamer kamer = kamers.get(nummer - 1);
-            kamer.setHintStrategy(new SimpeleHint());
+            // Verwijderd: oude hint strategy
             boolean geslaagd = kamer.speelKamer();
 
             if (geslaagd) {

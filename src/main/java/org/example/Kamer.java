@@ -3,31 +3,40 @@ package org.example;
 import java.util.Scanner;
 
 public abstract class Kamer {
-    protected Speler speler;
-    protected HintStrategy hintStrategy = new GeenHint();
+    protected final Speler speler;
+    protected final Scanner scanner;
+    protected HintProvider hintProvider;
 
-    public Kamer(Speler speler) {
+    public Kamer(Speler speler, Scanner scanner) {
         this.speler = speler;
+        this.scanner = scanner;
+        this.hintProvider = new RandomHintProvider(
+                new HelpHintProvider(),
+                new FunnyHintProvider()
+        );
     }
 
-    public void setHintStrategy(HintStrategy hintStrategy) {
-        this.hintStrategy = hintStrategy;
+    public void setHintProvider(HintProvider hintProvider) {
+        this.hintProvider = hintProvider;
     }
 
-    public void toonHint() {
-        System.out.println("💡 Hint: " + hintStrategy.geefHint());
+    protected void toonHint() {
+        System.out.println("💡 Denk goed na voordat je antwoordt! Typ 'ja' bij een hintvraag voor hulp.");
     }
 
     public final boolean speelKamer() {
         toonIntro();
         boolean geslaagd = start();
-        if (geslaagd) verwerkSucces();
-        else verwerkFalen();
+        if (geslaagd) {
+            verwerkSucces();
+        } else {
+            verwerkFalen();
+        }
         return geslaagd;
     }
 
     protected void toonIntro() {
-        System.out.println("📍 Je betreedt een kamer...");
+        System.out.println("\n📍 Je betreedt een kamer...");
     }
 
     protected void verwerkSucces() {
@@ -38,17 +47,14 @@ public abstract class Kamer {
         System.out.println("❌ Niet gelukt. Probeer opnieuw.");
     }
 
-    protected boolean stelVraag(String vraag, String[] opties, char correctAntwoord) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("\n" + vraag);
-        for (int i = 0; i < opties.length; i++) {
-            System.out.println((char)('A' + i) + ". " + opties[i]);
+    protected boolean vraagHintNaFout() {
+        System.out.print("Wil je een hint? (ja/nee): ");
+        String antwoord = scanner.nextLine().trim().toLowerCase();
+        if (antwoord.equals("ja")) {
+            System.out.println("💡 Hint: " + hintProvider.getHint());
+            return true;
         }
-        System.out.print("Jouw antwoord (A/B/C/D): ");
-        String input = scanner.nextLine().trim().toUpperCase();
-        if (input.length() != 1) return false;
-        char antwoord = input.charAt(0);
-        return antwoord == correctAntwoord;
+        return false;
     }
 
     protected char vraagAntwoord(Scanner scanner, int maxOpties) {
@@ -67,7 +73,7 @@ public abstract class Kamer {
 
     protected boolean wilOpnieuwProberen(Scanner scanner) {
         while (true) {
-            System.out.println("Wil je de fout beantwoorde vragen opnieuw proberen? (ja/nee)");
+            System.out.print("Wil je de fout beantwoorde vragen opnieuw proberen? (ja/nee): ");
             String keuze = scanner.nextLine().trim().toLowerCase();
             if (keuze.equals("ja")) return true;
             if (keuze.equals("nee")) return false;

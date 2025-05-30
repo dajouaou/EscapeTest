@@ -8,24 +8,18 @@ import java.sql.SQLException;
 import javax.swing.*;
 import java.awt.*;
 
-
 class DailyScrumKamer extends Kamer {
-    private final Speler speler;
-    private final Scanner scanner;
     private final VraagStrategieen vraagStrategie;
 
     public DailyScrumKamer(Speler speler, Scanner scanner) {
-        super(speler);
-        this.speler = speler;
-        this.scanner = scanner;
+        super(speler, scanner);
         this.vraagStrategie = new DailyScrumVragen();
-        setHintStrategy(new SimpeleHint());
     }
 
     @Override
     public boolean start() {
         toonHint();
-        System.out.println("Welkom in de kamer!");
+        System.out.println("Welkom in de Daily Scrum kamer!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -46,6 +40,7 @@ class DailyScrumKamer extends Kamer {
                 System.out.println("❌ Fout!");
                 speler.notifyGameObservers("fout");
                 foutBeantwoordeVragen.add(i);
+                vraagHintNaFout();
             }
         }
 
@@ -66,6 +61,7 @@ class DailyScrumKamer extends Kamer {
                     System.out.println("❌ Nog steeds fout!");
                     speler.notifyGameObservers("fout");
                     nogFout.add(index);
+                    vraagHintNaFout();
                 }
             }
             foutBeantwoordeVragen = nogFout;
@@ -91,23 +87,19 @@ class DailyScrumKamer extends Kamer {
         return true;
     }
 }
+
 class ScrumBoardKamer extends Kamer {
-    private final Speler speler;
-    private final Scanner scanner;
     private final VraagStrategieen vraagStrategie;
 
     public ScrumBoardKamer(Speler speler, Scanner scanner) {
-        super(speler);
-        this.speler = speler;
-        this.scanner = scanner;
+        super(speler, scanner);
         this.vraagStrategie = new ScrumBoardVragen();
-        setHintStrategy(new SimpeleHint());
     }
 
     @Override
     public boolean start() {
         toonHint();
-        System.out.println("Welkom in de kamer!");
+        System.out.println("Welkom in de Scrum Board kamer!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -128,6 +120,7 @@ class ScrumBoardKamer extends Kamer {
                 System.out.println("❌ Fout!");
                 speler.notifyGameObservers("fout");
                 foutBeantwoordeVragen.add(i);
+                vraagHintNaFout();
             }
         }
 
@@ -148,6 +141,7 @@ class ScrumBoardKamer extends Kamer {
                     System.out.println("❌ Nog steeds fout!");
                     speler.notifyGameObservers("fout");
                     nogFout.add(index);
+                    vraagHintNaFout();
                 }
             }
             foutBeantwoordeVragen = nogFout;
@@ -173,15 +167,13 @@ class ScrumBoardKamer extends Kamer {
         return true;
     }
 }
+
 class SprintPlanningKamer extends Kamer {
-    private final Scanner scanner;
     private final VraagStrategieen vraagStrategie;
 
-    public SprintPlanningKamer(Speler speler) {
-        super(speler);
+    public SprintPlanningKamer(Speler speler, Scanner scanner) {
+        super(speler, scanner);
         this.vraagStrategie = new SprintPlanningVragen();
-        this.scanner = new Scanner(System.in);  // Bij voorkeur één scanner gebruiken in app
-        setHintStrategy(new ScopeCreepHint()); // Nieuwe hint
     }
 
     @Override
@@ -209,6 +201,7 @@ class SprintPlanningKamer extends Kamer {
                 System.out.println("❌ Fout!");
                 speler.notifyGameObservers("fout");
                 foutBeantwoordeVragen.add(i);
+                vraagHintNaFout();
             }
         }
 
@@ -229,6 +222,7 @@ class SprintPlanningKamer extends Kamer {
                     System.out.println("❌ Nog steeds fout!");
                     speler.notifyGameObservers("fout");
                     nogFout.add(index);
+                    vraagHintNaFout();
                 }
             }
             foutBeantwoordeVragen = nogFout;
@@ -258,23 +252,19 @@ class SprintPlanningKamer extends Kamer {
         return true;
     }
 }
+
 class SprintRetrospectiveKamer extends Kamer {
-    private final Speler speler;
-    private final Scanner scanner;
     private final VraagStrategieen vraagStrategie;
 
     public SprintRetrospectiveKamer(Speler speler, Scanner scanner) {
-        super(speler);
-        this.speler = speler;
-        this.scanner = scanner;
+        super(speler, scanner);
         this.vraagStrategie = new SprintRetrospectiveVragen();
-        setHintStrategy(new SimpeleHint());
     }
 
     @Override
     public boolean start() {
         toonHint();
-        System.out.println("Welkom in de kamer!");
+        System.out.println("Welkom in de Sprint Retrospective kamer!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -295,6 +285,7 @@ class SprintRetrospectiveKamer extends Kamer {
                 System.out.println("❌ Fout!");
                 speler.notifyGameObservers("fout");
                 foutBeantwoordeVragen.add(i);
+                vraagHintNaFout();
             }
         }
 
@@ -315,6 +306,7 @@ class SprintRetrospectiveKamer extends Kamer {
                     System.out.println("❌ Nog steeds fout!");
                     speler.notifyGameObservers("fout");
                     nogFout.add(index);
+                    vraagHintNaFout();
                 }
             }
             foutBeantwoordeVragen = nogFout;
@@ -340,23 +332,19 @@ class SprintRetrospectiveKamer extends Kamer {
         return true;
     }
 }
+
 class SprintReviewKamer extends Kamer {
-    private final Speler speler;
-    private final Scanner scanner;
     private final VraagStrategieen vraagStrategie;
 
     public SprintReviewKamer(Speler speler, Scanner scanner) {
-        super(speler);
-        this.speler = speler;
-        this.scanner = scanner;
+        super(speler, scanner);
         this.vraagStrategie = new SprintReviewVragen();
-        setHintStrategy(new SimpeleHint());
     }
 
     @Override
     public boolean start() {
         toonHint();
-        System.out.println("Welkom in de kamer!");
+        System.out.println("Welkom in de Sprint Review kamer!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -377,6 +365,7 @@ class SprintReviewKamer extends Kamer {
                 System.out.println("❌ Fout!");
                 speler.notifyGameObservers("fout");
                 foutBeantwoordeVragen.add(i);
+                vraagHintNaFout();
             }
         }
 
@@ -397,6 +386,7 @@ class SprintReviewKamer extends Kamer {
                     System.out.println("❌ Nog steeds fout!");
                     speler.notifyGameObservers("fout");
                     nogFout.add(index);
+                    vraagHintNaFout();
                 }
             }
             foutBeantwoordeVragen = nogFout;
@@ -422,19 +412,16 @@ class SprintReviewKamer extends Kamer {
         return true;
     }
 }
+
 class FinaleTiakamer extends Kamer {
-    private final Speler speler;
     private final javax.swing.Timer timer;
     private int secondenOver = 180;
     private boolean timerGestart = false;
     private JFrame gui;
-    private final Scanner scanner;
     private final VraagStrategieen vraagStrategie;
 
     public FinaleTiakamer(Speler speler, Scanner scanner) {
-        super(speler);
-        this.speler = speler;
-        this.scanner = scanner;
+        super(speler, scanner);
         this.vraagStrategie = new FinaleTiaVragen();
         this.timer = new javax.swing.Timer(1000, e -> {
             secondenOver--;
@@ -444,7 +431,6 @@ class FinaleTiakamer extends Kamer {
                 System.exit(0);
             }
         });
-        setHintStrategy(new TIAHint());
     }
 
     @Override
@@ -515,6 +501,7 @@ class FinaleTiakamer extends Kamer {
             } else {
                 System.out.println("❌ Fout. Het juiste antwoord was: " + v.getCorrectAntwoord());
                 speler.notifyGameObservers("fout");
+                vraagHintNaFout();
             }
         }
 
@@ -546,14 +533,11 @@ class FinaleTiakamer extends Kamer {
 class VoorwerpenKamer extends Kamer {
     private final Oppakbaar sleutel;
     private final InteractiefVoorwerp puzzel;
-    private final Scanner scanner;
 
     public VoorwerpenKamer(Speler speler, Scanner scanner) {
-        super(speler);
-        this.scanner = scanner;
+        super(speler, scanner);
         this.sleutel = new Sleutel("Escape Sleutel");
         this.puzzel = new Puzzel("Wat is de derde Scrum waarde na Focus en Openheid?", "Respect");
-        setHintStrategy(new SimpeleHint());  // kan eventueel aparte hint krijgen
     }
 
     @Override

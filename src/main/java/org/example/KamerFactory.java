@@ -9,7 +9,7 @@ public class KamerFactory {
     private static final Map<Integer, BiFunction<Speler, Scanner, Kamer>> kamerMap = new HashMap<>();
 
     static {
-        register(1, (s, sc) -> new SprintPlanningKamer(s));
+        register(1, (s, sc) -> new SprintPlanningKamer(s, sc));
         register(2, (s, sc) -> new DailyScrumKamer(s, sc));
         register(3, (s, sc) -> new ScrumBoardKamer(s, sc));
         register(4, (s, sc) -> new SprintReviewKamer(s, sc));
@@ -26,8 +26,6 @@ public class KamerFactory {
         if (!kamerMap.containsKey(nummer)) {
             throw new IllegalArgumentException("Onbekend kamernummer: " + nummer);
         }
-        Kamer kamer = kamerMap.get(nummer).apply(speler, scanner);
-        kamer.setHintStrategy(new SimpeleHint());
-        return kamer;
+        return kamerMap.get(nummer).apply(speler, scanner);
     }
 }
