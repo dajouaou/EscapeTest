@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public abstract class Kamer {
     protected Speler speler;
-    protected HintStrategy hintStrategy = new GeenHint(); // DIP
+    protected HintStrategy hintStrategy = new GeenHint();
 
     public Kamer(Speler speler) {
         this.speler = speler;
@@ -20,7 +20,7 @@ public abstract class Kamer {
 
     public final boolean speelKamer() {
         toonIntro();
-        boolean geslaagd = start(); // laat kamer zijn eigen logica uitvoeren slay yuhh<3
+        boolean geslaagd = start();
         if (geslaagd) verwerkSucces();
         else verwerkFalen();
         return geslaagd;
@@ -51,6 +51,29 @@ public abstract class Kamer {
         return antwoord == correctAntwoord;
     }
 
-    public abstract boolean start(); // wordt opgeroepen in speelKamer()
-}
+    protected char vraagAntwoord(Scanner scanner, int maxOpties) {
+        while (true) {
+            System.out.print("Kies het juiste antwoord (A-" + (char)('A' + maxOpties - 1) + "): ");
+            String antwoord = scanner.nextLine().trim().toUpperCase();
+            if (antwoord.length() == 1) {
+                char c = antwoord.charAt(0);
+                if (c >= 'A' && c < ('A' + maxOpties)) {
+                    return c;
+                }
+            }
+            System.out.println("Ongeldige invoer. Probeer opnieuw.");
+        }
+    }
 
+    protected boolean wilOpnieuwProberen(Scanner scanner) {
+        while (true) {
+            System.out.println("Wil je de fout beantwoorde vragen opnieuw proberen? (ja/nee)");
+            String keuze = scanner.nextLine().trim().toLowerCase();
+            if (keuze.equals("ja")) return true;
+            if (keuze.equals("nee")) return false;
+            System.out.println("Voer 'ja' of 'nee' in.");
+        }
+    }
+
+    public abstract boolean start();
+}

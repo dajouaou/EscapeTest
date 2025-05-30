@@ -107,18 +107,6 @@ public class Speler {
         }
     }
 
-    public int getMunten() {
-        return munten;
-    }
-
-    public boolean wisselMuntenIn(int kosten) {
-        if (kosten <= 0) return false;
-        if (munten >= kosten) {
-            munten -= kosten;
-            return true;
-        }
-        return false;
-    }
     private final List<GameObserver> gameObservers = new ArrayList<>();
 
     public void addGameObserver(GameObserver observer) {
@@ -131,10 +119,6 @@ public class Speler {
         for (GameObserver observer : gameObservers) {
             observer.update(resultaat);
         }
-    }
-    public interface GameSubject {
-        void addObserver(GameObserver o);
-        void notifyObservers(String resultaat);
     }
 
     public String getKamerNaam() {

@@ -29,8 +29,8 @@ public class Game {
         speler.addGameObserver(new Deur());
 
 
-        for (int i = 1; i <= 6; i++) {
-            kamers.add(KamerFactory.maakKamer(i, speler, dbManager, scanner));
+        for (int i = 1; i <= 7; i++) {
+            kamers.add(KamerFactory.maakKamer(i, speler, scanner));
         }
     }
 
@@ -56,7 +56,7 @@ public class Game {
         try {
             int huidigeKamer = dbManager.getHuidigeKamer(speler.getGebruikersnaam());
 
-            if (nummer > 6) {
+            if (nummer > 7) {
                 System.out.println("Deze kamer bestaat niet. Delulu ahh🩷");
                 return;
             }

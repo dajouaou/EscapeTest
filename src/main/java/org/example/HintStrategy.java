@@ -15,3 +15,12 @@ class GeenHint implements HintStrategy {
         return "Geen hint beschikbaar.";
     }
 }
+
+class ScopeCreepHint implements HintStrategy{
+    public String geefHint() {return "lol";}
+}
+
+class TIAHint implements HintStrategy {
+    public String geefHint() {return "tia";}
+}
+
