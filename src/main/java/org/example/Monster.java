@@ -3,18 +3,18 @@ package org.example;
 public class Monster implements GameObserver {
     private final MonsterGedrag gedrag;
     private final String kamerNaam;
-    private final Speler speler; // ✅ Voeg deze toe
+    private final Speler speler;
 
     public Monster(MonsterGedrag gedrag, String kamerNaam, Speler speler) {
         this.gedrag = gedrag;
         this.kamerNaam = kamerNaam;
-        this.speler = speler; // ✅ Zet hem lokaal
+        this.speler = speler;
     }
 
     @Override
     public void update(String resultaat) {
         if ("fout".equalsIgnoreCase(resultaat)) {
-            String huidigeKamerNaam = speler.getKamerNaam(); // ✅ Gebruik deze instantie
+            String huidigeKamerNaam = speler.getKamerNaam();
 
             if (kamerNaam.equalsIgnoreCase(huidigeKamerNaam)) {
                 versperWeg();
