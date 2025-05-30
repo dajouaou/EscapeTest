@@ -15,11 +15,10 @@ public class Monster implements GameObserver {
     public void update(String resultaat) {
         if ("fout".equalsIgnoreCase(resultaat)) {
             String huidigeKamerNaam = speler.getKamerNaam();
-
             if (kamerNaam.equalsIgnoreCase(huidigeKamerNaam)) {
                 versperWeg();
             }
-        } else if ("correct".equalsIgnoreCase(resultaat)) {
+        } else if ("goed".equalsIgnoreCase(resultaat)) {
             System.out.println("👹 Monster verdwijnt.");
         }
     }

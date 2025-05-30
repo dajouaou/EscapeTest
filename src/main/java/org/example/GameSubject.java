@@ -7,10 +7,16 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class TimerPopup implements Speler.GameSubject {
+public interface GameSubject {
+    void addObserver(GameObserver o);
+    void notifyObservers(String resultaat);
+}
+
+
+class TimerPopup implements GameSubject {
     private JFrame frame;
     private JLabel timerLabel;
-    private Timer timer;
+    private java.util.Timer timer;
     private int seconden;
 
     private final List<GameObserver> observers = new ArrayList<>();
@@ -45,7 +51,7 @@ public class TimerPopup implements Speler.GameSubject {
         frame.setVisible(true);
     }
 
-   public void startTimer() {
+    public void startTimer() {
         timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -78,7 +84,6 @@ public class TimerPopup implements Speler.GameSubject {
         }
     }
 
-    // Observer Pattern implementatie
     @Override
     public void addObserver(GameObserver o) {
         observers.add(o);
@@ -92,3 +97,4 @@ public class TimerPopup implements Speler.GameSubject {
         }
     }
 }
+
