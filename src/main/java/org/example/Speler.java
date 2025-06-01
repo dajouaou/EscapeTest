@@ -11,6 +11,10 @@ public class Speler {
     private Map<Integer, Integer> laatsteVraagPerKamer = new HashMap<>();
 
     private int munten = 0;
+    private boolean heeftZwaard = false;
+
+    private Joker joker;
+    private boolean jokerGebruikt = false;
 
     public Speler(String naam) {
         if (naam == null || naam.trim().isEmpty()) {
@@ -68,7 +72,31 @@ public class Speler {
         setMonster(null);
     }
 
-    // observer management girlssssssss
+    public void geefZwaard() {
+        this.heeftZwaard = true;
+        System.out.println("🗡️ Je hebt een zwaard opgepakt!");
+    }
+
+    public boolean heeftZwaard() {
+        return this.heeftZwaard;
+    }
+
+    public void kiesJoker(Joker gekozenJoker) {
+        this.joker = gekozenJoker;
+        System.out.println("🎴 Joker gekozen: " + gekozenJoker.getClass().getSimpleName());
+    }
+
+    public void gebruikJoker(Kamer kamer) {
+        if (joker == null) {
+            System.out.println("❌ Je hebt geen joker gekozen.");
+        } else if (jokerGebruikt) {
+            System.out.println("❌ Je hebt je joker al gebruikt.");
+        } else {
+            joker.useIn(kamer);
+            jokerGebruikt = true;
+        }
+    }
+
     public void addObserver(SpelerObserver observer) {
         if (observer != null) observers.add(observer);
     }
@@ -98,6 +126,8 @@ public class Speler {
         status.append("Kamers gehaald: ").append(kamersGehaald).append("\n");
         status.append("Actief monster: ").append(heeftMonster() ? actiefMonster.getNaam() : "Geen").append("\n");
         status.append("Munten: ").append(munten).append("\n");
+        status.append("Zwaard: ").append(heeftZwaard ? "🗡️ In bezit" : "Geen").append("\n");
+        status.append("Joker: ").append(joker != null ? joker.getClass().getSimpleName() + (jokerGebruikt ? " (gebruikt)" : " (beschikbaar)") : "Geen").append("\n");
         return status.toString();
     }
 
@@ -133,5 +163,18 @@ public class Speler {
         }
     }
 
+    // ✅ Toegevoegde methode voor automatische joker-gebruik
+    public void gebruikJokerAlsMogelijk(Kamer kamer) {
+        if (joker != null && !jokerGebruikt) {
+            joker.useIn(kamer);
+            jokerGebruikt = true;
+        }
+    }
+    public Joker getJoker() {
+        return this.joker;
+    }
+    public boolean isJokerGebruikt() {
+        return jokerGebruikt;
+    }
 
-}
+} 

@@ -1,3 +1,4 @@
+
 package org.example;
 
 import java.util.Scanner;
@@ -15,13 +16,21 @@ public abstract class Kamer {
                 new FunnyHintProvider()
         );
     }
+    public HintProvider getHintProvider() {
+        return this.hintProvider;
+    }
 
     public void setHintProvider(HintProvider hintProvider) {
         this.hintProvider = hintProvider;
     }
 
+
     protected void toonHint() {
         System.out.println("💡 Denk goed na voordat je antwoordt! Typ 'ja' bij een hintvraag voor hulp.");
+    }
+
+    public void accept(KeyJoker joker) {
+        // standaardkamers doen niets
     }
 
     public final boolean speelKamer() {
@@ -37,6 +46,21 @@ public abstract class Kamer {
 
     protected void toonIntro() {
         System.out.println("\n📍 Je betreedt een kamer...");
+        //  Kamerinfo tonen (ISP)
+        Kamerinfo info = new Kamerinfo();
+        info.showMessage();
+
+        // Voeg kans toe om zwaard op te rapen als speler het nog niet heeft
+        if (!speler.heeftZwaard()) {
+            System.out.println("⚔️ Je ziet een oud zwaard aan de muur hangen.");
+            System.out.print("Wil je het zwaard oppakken? (ja/nee): ");
+            String keuze = scanner.nextLine().trim().toLowerCase();
+            if (keuze.equals("ja")) {
+                speler.geefZwaard();
+            } else {
+                System.out.println("Je laat het zwaard hangen en loopt verder.");
+            }
+        }
     }
 
     protected void verwerkSucces() {
