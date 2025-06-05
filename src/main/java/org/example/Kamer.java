@@ -5,19 +5,24 @@ import java.util.Scanner;
 public abstract class Kamer {
     protected final Speler speler;
     protected final Scanner scanner;
-    protected HintProvider hintProvider;
+    protected HintProvider helpHintProvider;
+    protected HintProvider funnyHintProvider;
 
     public Kamer(Speler speler, Scanner scanner) {
         this.speler = speler;
         this.scanner = scanner;
-        this.hintProvider = new RandomHintProvider(
-                new HelpHintProvider(),
-                new FunnyHintProvider()
-        );
+
+        // Haal standaard providers op
+        this.helpHintProvider = getHelpHintProvider();
+        this.funnyHintProvider = getFunnyHintProvider();
     }
 
-    public void setHintProvider(HintProvider hintProvider) {
-        this.hintProvider = hintProvider;
+    public void setHelpHintProvider(HintProvider helpHintProvider) {
+        this.helpHintProvider = helpHintProvider;
+    }
+
+    public void setFunnyHintProvider(HintProvider funnyHintProvider) {
+        this.funnyHintProvider = funnyHintProvider;
     }
 
     protected void toonHint() {
@@ -51,7 +56,19 @@ public abstract class Kamer {
         System.out.print("Wil je een hint? (ja/nee): ");
         String antwoord = scanner.nextLine().trim().toLowerCase();
         if (antwoord.equals("ja")) {
-            System.out.println("💡 Hint: " + hintProvider.getHint());
+            while (true) {
+                System.out.print("Kies type hint - 'help' voor een uitleg, 'funny' voor iets luchtigs: ");
+                String keuze = scanner.nextLine().trim().toLowerCase();
+                if (keuze.equals("help")) {
+                    System.out.println("🛠️ Hulp Hint: " + helpHintProvider.getHint());
+                    break;
+                } else if (keuze.equals("funny")) {
+                    System.out.println("😂 Grappige Hint: " + funnyHintProvider.getHint());
+                    break;
+                } else {
+                    System.out.println("Ongeldige keuze. Typ 'help' of 'funny'.");
+                }
+            }
             return true;
         }
         return false;
@@ -81,5 +98,7 @@ public abstract class Kamer {
         }
     }
 
+    protected abstract HintProvider getHelpHintProvider();
+    protected abstract HintProvider getFunnyHintProvider();
     public abstract boolean start();
 }

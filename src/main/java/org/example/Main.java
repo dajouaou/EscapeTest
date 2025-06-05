@@ -2,8 +2,6 @@ package org.example;
 
 import java.util.Scanner;
 
-//girls we deff getting an A+ bro we cookedddd
-
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);

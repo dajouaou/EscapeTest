@@ -15,6 +15,16 @@ class DailyScrumKamer extends Kamer {
         super(speler, scanner);
         this.vraagStrategie = new DailyScrumVragen();
     }
+    @Override
+    protected HintProvider getHelpHintProvider() {
+        return new DailyScrumHelpHintProvider();
+    }
+
+    @Override
+    protected HintProvider getFunnyHintProvider() {
+        return new DailyScrumFunnyHintProvider();
+    }
+
 
     @Override
     public boolean start() {
@@ -97,6 +107,16 @@ class ScrumBoardKamer extends Kamer {
     }
 
     @Override
+    protected HintProvider getHelpHintProvider() {
+        return new ScrumBoardHelpHintProvider();
+    }
+
+    @Override
+    protected HintProvider getFunnyHintProvider() {
+        return new ScrumBoardFunnyHintProvider();
+    }
+
+    @Override
     public boolean start() {
         toonHint();
         System.out.println("Welkom in de Scrum Board kamer!");
@@ -175,7 +195,15 @@ class SprintPlanningKamer extends Kamer {
         super(speler, scanner);
         this.vraagStrategie = new SprintPlanningVragen();
     }
+    @Override
+    protected HintProvider getHelpHintProvider() {
+        return new SprintPlanningHelpHintProvider();
+    }
 
+    @Override
+    protected HintProvider getFunnyHintProvider() {
+        return new SprintPlanningFunnyHintProvider();
+    }
     @Override
     public boolean start() {
         toonHint();
@@ -260,6 +288,15 @@ class SprintRetrospectiveKamer extends Kamer {
         super(speler, scanner);
         this.vraagStrategie = new SprintRetrospectiveVragen();
     }
+    @Override
+    protected HintProvider getHelpHintProvider() {
+        return new SprintRetrospectiveHelpHintProvider();
+    }
+
+    @Override
+    protected HintProvider getFunnyHintProvider() {
+        return new SprintRetrospectiveHelpHintProvider();
+    }
 
     @Override
     public boolean start() {
@@ -339,6 +376,15 @@ class SprintReviewKamer extends Kamer {
     public SprintReviewKamer(Speler speler, Scanner scanner) {
         super(speler, scanner);
         this.vraagStrategie = new SprintReviewVragen();
+    }
+    @Override
+    protected HintProvider getHelpHintProvider() {
+        return new SprintReviewHelpHintProvider();
+    }
+
+    @Override
+    protected HintProvider getFunnyHintProvider() {
+        return new SprintReviewFunnyHintProvider();
     }
 
     @Override
@@ -432,6 +478,17 @@ class FinaleTiakamer extends Kamer {
             }
         });
     }
+
+    @Override
+    protected HintProvider getHelpHintProvider() {
+        return new TIAKamerHelpHintProvider();
+    }
+
+    @Override
+    protected HintProvider getFunnyHintProvider() {
+        return new TIAKamerFunnyHintProvider();
+    }
+
 
     @Override
     public boolean start() {
@@ -538,6 +595,16 @@ class VoorwerpenKamer extends Kamer {
         super(speler, scanner);
         this.sleutel = new Sleutel("Escape Sleutel");
         this.puzzel = new Puzzel("Wat is de derde Scrum waarde na Focus en Openheid?", "Respect");
+    }
+
+    @Override
+    protected HintProvider getHelpHintProvider() {
+        return new VoorwerpenKamerHelpHintProvider();
+    }
+
+    @Override
+    protected HintProvider getFunnyHintProvider() {
+        return new VoorwerpenKamerFunnyHintProvider();
     }
 
     @Override
