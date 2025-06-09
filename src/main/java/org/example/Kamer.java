@@ -2,7 +2,7 @@
 package org.example;
 
 import java.util.Scanner;
-
+import org.example.Game;
 public abstract class Kamer {
     protected final Speler speler;
     protected final Scanner scanner;
@@ -33,16 +33,27 @@ public abstract class Kamer {
         // standaardkamers doen niets
     }
 
+
     public final boolean speelKamer() {
         toonIntro();
+
+        // 🔐 Joker pas hier vragen na uitleg
+        if (speler.getJoker() == null) {
+            Game.kiesJokerVoorSpeler(speler, scanner);
+        }
+
         boolean geslaagd = start();
+
         if (geslaagd) {
             verwerkSucces();
         } else {
             verwerkFalen();
         }
+
         return geslaagd;
     }
+
+
 
     protected void toonIntro() {
         System.out.println("\n📍 Je betreedt een kamer...");

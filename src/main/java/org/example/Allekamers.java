@@ -121,8 +121,8 @@ class DailyScrumKamer extends Kamer {
 
     @Override
     public void accept(KeyJoker joker) {
-        System.out.println("🔑 Je ontvangt een sleutel dankzij de KeyJoker!");
-        // speler.voegSleutelToe(); // optioneel
+        System.out.println("🔑 De KeyJoker opent een extra sleutel in deze kamer!");
+        speler.voegMuntenToe(1); // of een andere beloning
     }
 }
 
@@ -452,7 +452,8 @@ class SprintReviewKamer extends Kamer {
     }
     @Override
     public void accept(KeyJoker joker) {
-        System.out.println("🔑 Je ontvangt een sleutel dankzij de KeyJoker!");
+        System.out.println("🔓 Je gebruikt de KeyJoker en krijgt toegang tot een verborgen item!");
+        speler.voegMuntenToe(1); // of iets unieks
     }
 
 }
