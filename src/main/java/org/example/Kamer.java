@@ -1,47 +1,77 @@
+
 package org.example;
 
 import java.util.Scanner;
-
+import org.example.Game;
 public abstract class Kamer {
     protected final Speler speler;
     protected final Scanner scanner;
-    protected HintProvider helpHintProvider;
-    protected HintProvider funnyHintProvider;
+    protected HintProvider hintProvider;
 
     public Kamer(Speler speler, Scanner scanner) {
         this.speler = speler;
         this.scanner = scanner;
-
-        // Haal standaard providers op
-        this.helpHintProvider = getHelpHintProvider();
-        this.funnyHintProvider = getFunnyHintProvider();
+        this.hintProvider = new RandomHintProvider(
+                new HelpHintProvider(),
+                new FunnyHintProvider()
+        );
+    }
+    public HintProvider getHintProvider() {
+        return this.hintProvider;
     }
 
-    public void setHelpHintProvider(HintProvider helpHintProvider) {
-        this.helpHintProvider = helpHintProvider;
+    public void setHintProvider(HintProvider hintProvider) {
+        this.hintProvider = hintProvider;
     }
 
-    public void setFunnyHintProvider(HintProvider funnyHintProvider) {
-        this.funnyHintProvider = funnyHintProvider;
-    }
 
     protected void toonHint() {
         System.out.println("💡 Denk goed na voordat je antwoordt! Typ 'ja' bij een hintvraag voor hulp.");
     }
 
+    public void accept(KeyJoker joker) {
+        // standaardkamers doen niets
+    }
+
+
     public final boolean speelKamer() {
         toonIntro();
+
+        // 🔐 Joker pas hier vragen na uitleg
+        if (speler.getJoker() == null) {
+            Game.kiesJokerVoorSpeler(speler, scanner);
+        }
+
         boolean geslaagd = start();
+
         if (geslaagd) {
             verwerkSucces();
         } else {
             verwerkFalen();
         }
+
         return geslaagd;
     }
 
+
+
     protected void toonIntro() {
         System.out.println("\n📍 Je betreedt een kamer...");
+        //  Kamerinfo tonen (ISP)
+        Kamerinfo info = new Kamerinfo();
+        info.showMessage();
+
+        // Voeg kans toe om zwaard op te rapen als speler het nog niet heeft
+        if (!speler.heeftZwaard()) {
+            System.out.println("⚔️ Je ziet een oud zwaard aan de muur hangen.");
+            System.out.print("Wil je het zwaard oppakken? (ja/nee): ");
+            String keuze = scanner.nextLine().trim().toLowerCase();
+            if (keuze.equals("ja")) {
+                speler.geefZwaard();
+            } else {
+                System.out.println("Je laat het zwaard hangen en loopt verder.");
+            }
+        }
     }
 
     protected void verwerkSucces() {
@@ -56,19 +86,7 @@ public abstract class Kamer {
         System.out.print("Wil je een hint? (ja/nee): ");
         String antwoord = scanner.nextLine().trim().toLowerCase();
         if (antwoord.equals("ja")) {
-            while (true) {
-                System.out.print("Kies type hint - 'help' voor een uitleg, 'funny' voor iets luchtigs: ");
-                String keuze = scanner.nextLine().trim().toLowerCase();
-                if (keuze.equals("help")) {
-                    System.out.println("🛠️ Hulp Hint: " + helpHintProvider.getHint());
-                    break;
-                } else if (keuze.equals("funny")) {
-                    System.out.println("😂 Grappige Hint: " + funnyHintProvider.getHint());
-                    break;
-                } else {
-                    System.out.println("Ongeldige keuze. Typ 'help' of 'funny'.");
-                }
-            }
+            System.out.println("💡 Hint: " + hintProvider.getHint());
             return true;
         }
         return false;
@@ -98,7 +116,5 @@ public abstract class Kamer {
         }
     }
 
-    protected abstract HintProvider getHelpHintProvider();
-    protected abstract HintProvider getFunnyHintProvider();
     public abstract boolean start();
 }

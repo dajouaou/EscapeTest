@@ -1,4 +1,3 @@
-
 package org.example;
 
 import java.util.ArrayList;
@@ -8,6 +7,8 @@ import java.sql.SQLException;
 import javax.swing.*;
 import java.awt.*;
 
+
+
 class DailyScrumKamer extends Kamer {
     private final VraagStrategieen vraagStrategie;
 
@@ -15,21 +16,21 @@ class DailyScrumKamer extends Kamer {
         super(speler, scanner);
         this.vraagStrategie = new DailyScrumVragen();
     }
-    @Override
-    protected HintProvider getHelpHintProvider() {
-        return new DailyScrumHelpHintProvider();
-    }
-
-    @Override
-    protected HintProvider getFunnyHintProvider() {
-        return new DailyScrumFunnyHintProvider();
-    }
-
 
     @Override
     public boolean start() {
         toonHint();
         System.out.println("Welkom in de Daily Scrum kamer!");
+
+        // ➤ Joker prompt voor KeyJoker of ReviewKeyJoker bovenaan (1x per kamer)
+        Joker actieveJoker = speler.getJoker();
+        if ((actieveJoker instanceof KeyJoker || actieveJoker instanceof ReviewKeyJoker) && !speler.isJokerGebruikt()) {
+            System.out.print("Wil je je KeyJoker gebruiken voor deze kamer? (ja/nee): ");
+            String gebruik = scanner.nextLine().trim().toLowerCase();
+            if (gebruik.equals("ja")) {
+                speler.gebruikJoker(this); // activeert accept() of useIn()
+            }
+        }
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -38,9 +39,20 @@ class DailyScrumKamer extends Kamer {
         for (int i = 0; i < vragen.size(); i++) {
             Vraag vraag = vragen.get(i);
             System.out.println(vraag.getVraag());
+
+            // ➤ HintJoker prompt per vraag
+            if (actieveJoker instanceof HintJoker && !speler.isJokerGebruikt()) {
+                System.out.print("Wil je je HintJoker gebruiken voor deze vraag? (ja/nee): ");
+                String gebruik = scanner.nextLine().trim().toLowerCase();
+                if (gebruik.equals("ja")) {
+                    speler.gebruikJoker(this); // activeert Hint tonen
+                }
+            }
+
             for (String optie : vraag.getOpties()) {
                 System.out.println(optie);
             }
+
             char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
             if (antwoord == vraag.getCorrectAntwoord()) {
                 System.out.println("✅ Correct!");
@@ -59,9 +71,19 @@ class DailyScrumKamer extends Kamer {
             for (int index : foutBeantwoordeVragen) {
                 Vraag vraag = vragen.get(index);
                 System.out.println(vraag.getVraag());
+
+                if (actieveJoker instanceof HintJoker && !speler.isJokerGebruikt()) {
+                    System.out.print("Wil je je HintJoker gebruiken voor deze vraag? (ja/nee): ");
+                    String gebruik = scanner.nextLine().trim().toLowerCase();
+                    if (gebruik.equals("ja")) {
+                        speler.gebruikJoker(this);
+                    }
+                }
+
                 for (String optie : vraag.getOpties()) {
                     System.out.println(optie);
                 }
+
                 char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
                 if (antwoord == vraag.getCorrectAntwoord()) {
                     System.out.println("✅ Correct!");
@@ -96,7 +118,14 @@ class DailyScrumKamer extends Kamer {
 
         return true;
     }
+
+    @Override
+    public void accept(KeyJoker joker) {
+        System.out.println("🔑 De KeyJoker opent een extra sleutel in deze kamer!");
+        speler.voegMuntenToe(1); // of een andere beloning
+    }
 }
+
 
 class ScrumBoardKamer extends Kamer {
     private final VraagStrategieen vraagStrategie;
@@ -104,16 +133,6 @@ class ScrumBoardKamer extends Kamer {
     public ScrumBoardKamer(Speler speler, Scanner scanner) {
         super(speler, scanner);
         this.vraagStrategie = new ScrumBoardVragen();
-    }
-
-    @Override
-    protected HintProvider getHelpHintProvider() {
-        return new ScrumBoardHelpHintProvider();
-    }
-
-    @Override
-    protected HintProvider getFunnyHintProvider() {
-        return new ScrumBoardFunnyHintProvider();
     }
 
     @Override
@@ -195,15 +214,7 @@ class SprintPlanningKamer extends Kamer {
         super(speler, scanner);
         this.vraagStrategie = new SprintPlanningVragen();
     }
-    @Override
-    protected HintProvider getHelpHintProvider() {
-        return new SprintPlanningHelpHintProvider();
-    }
 
-    @Override
-    protected HintProvider getFunnyHintProvider() {
-        return new SprintPlanningFunnyHintProvider();
-    }
     @Override
     public boolean start() {
         toonHint();
@@ -288,15 +299,6 @@ class SprintRetrospectiveKamer extends Kamer {
         super(speler, scanner);
         this.vraagStrategie = new SprintRetrospectiveVragen();
     }
-    @Override
-    protected HintProvider getHelpHintProvider() {
-        return new SprintRetrospectiveHelpHintProvider();
-    }
-
-    @Override
-    protected HintProvider getFunnyHintProvider() {
-        return new SprintRetrospectiveHelpHintProvider();
-    }
 
     @Override
     public boolean start() {
@@ -377,15 +379,6 @@ class SprintReviewKamer extends Kamer {
         super(speler, scanner);
         this.vraagStrategie = new SprintReviewVragen();
     }
-    @Override
-    protected HintProvider getHelpHintProvider() {
-        return new SprintReviewHelpHintProvider();
-    }
-
-    @Override
-    protected HintProvider getFunnyHintProvider() {
-        return new SprintReviewFunnyHintProvider();
-    }
 
     @Override
     public boolean start() {
@@ -457,6 +450,12 @@ class SprintReviewKamer extends Kamer {
 
         return true;
     }
+    @Override
+    public void accept(KeyJoker joker) {
+        System.out.println("🔓 Je gebruikt de KeyJoker en krijgt toegang tot een verborgen item!");
+        speler.voegMuntenToe(1); // of iets unieks
+    }
+
 }
 
 class FinaleTiakamer extends Kamer {
@@ -478,17 +477,6 @@ class FinaleTiakamer extends Kamer {
             }
         });
     }
-
-    @Override
-    protected HintProvider getHelpHintProvider() {
-        return new TIAKamerHelpHintProvider();
-    }
-
-    @Override
-    protected HintProvider getFunnyHintProvider() {
-        return new TIAKamerFunnyHintProvider();
-    }
-
 
     @Override
     public boolean start() {
@@ -598,16 +586,6 @@ class VoorwerpenKamer extends Kamer {
     }
 
     @Override
-    protected HintProvider getHelpHintProvider() {
-        return new VoorwerpenKamerHelpHintProvider();
-    }
-
-    @Override
-    protected HintProvider getFunnyHintProvider() {
-        return new VoorwerpenKamerFunnyHintProvider();
-    }
-
-    @Override
     public boolean start() {
         toonHint();
 
@@ -619,5 +597,6 @@ class VoorwerpenKamer extends Kamer {
 
         return true;
     }
+
 }
 
