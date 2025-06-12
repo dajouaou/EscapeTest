@@ -35,7 +35,7 @@ public class Main {
                     System.out.println("Account succesvol aangemaakt. Je bent nu ingelogd.");
                     ingelogd = true;
                 } else {
-                    System.out.println("Registratie mislukt. Gebruikersnaam bestaat al.");
+                     System.out.println("Registratie mislukt. Gebruikersnaam bestaat al.");
                 }
             } else if (keuze.equalsIgnoreCase("login")) {
                 if (db.controleerLogin(gebruikersnaam, wachtwoord)) {

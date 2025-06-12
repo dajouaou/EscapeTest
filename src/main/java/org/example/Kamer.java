@@ -39,7 +39,7 @@ public abstract class Kamer {
 
         // 🔐 Joker pas hier vragen na uitleg
         if (speler.getJoker() == null) {
-            Game.kiesJokerVoorSpeler(speler, scanner);
+
         }
 
         boolean geslaagd = start();
