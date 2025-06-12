@@ -18,7 +18,7 @@ public class Game {
         this.dbManager = dbManager;
         this.scanner = scanner;
 
-
+        // ✅ Joker wordt nu niet vooraf gekozen — dit gebeurt pas in de kamer zelf!
 
         // Voeg monsters toe als observers
         speler.addGameObserver(new Monster(new ScopeCreep(), "Sprint Planning", speler));
@@ -35,7 +35,7 @@ public class Game {
         }
     }
 
-    private void kiesJokerVoorSpeler() {
+    public static void kiesJokerVoorSpeler(Speler speler, Scanner scanner) {
         System.out.println("\n🃏 Kies één joker die je tijdens het spel mag inzetten:");
         System.out.println("1. HintJoker – Geeft een hint in elke kamer.");
         System.out.println("2. KeyJoker – Geeft een extra sleutel, maar alleen in Daily Scrum en Review.");
@@ -76,11 +76,6 @@ public class Game {
 
     public void betreedKamer(int nummer) {
         try {
-            // 👉 Joker pas kiezen als speler er nog geen heeft
-            if (speler.getJoker() == null) {
-                kiesJokerVoorSpeler();
-            }
-
             int huidigeKamer = dbManager.getHuidigeKamer(speler.getGebruikersnaam());
 
             if (nummer > 7) {
@@ -99,8 +94,7 @@ public class Game {
 
             Kamer kamer = kamers.get(nummer - 1);
 
-            // ❌ Automatische jokeractivatie is verwijderd zodat kamer zelf de vraag stelt
-
+            // Joker wordt nu pas in de kamer gevraagd
             boolean geslaagd = kamer.speelKamer();
 
             if (geslaagd) {

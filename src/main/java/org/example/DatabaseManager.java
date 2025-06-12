@@ -7,7 +7,7 @@ import static java.sql.DriverManager.getConnection;
 public class DatabaseManager {
     private final String url = "jdbc:mysql://localhost:3306/scrum_escape";
     private final String user = "root";
-    private final String password = "root";
+    private final String password = "1234";
 
 
 // ALS WAT FOUT GAAT MET DATABASE CHECK FF HIERZO GIRLYPOPS YAAAAAAAAAA

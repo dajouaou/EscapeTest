@@ -11,10 +11,7 @@ public abstract class Kamer {
     public Kamer(Speler speler, Scanner scanner) {
         this.speler = speler;
         this.scanner = scanner;
-        this.hintProvider = new RandomHintProvider(
-                new HelpHintProvider(),
-                new FunnyHintProvider()
-        );
+        this.hintProvider = null;
     }
     public HintProvider getHintProvider() {
         return this.hintProvider;
@@ -39,7 +36,7 @@ public abstract class Kamer {
 
         // 🔐 Joker pas hier vragen na uitleg
         if (speler.getJoker() == null) {
-
+            Game.kiesJokerVoorSpeler(speler, scanner);
         }
 
         boolean geslaagd = start();

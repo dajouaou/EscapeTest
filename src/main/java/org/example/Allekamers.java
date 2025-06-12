@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 import java.sql.SQLException;
 import javax.swing.*;
@@ -15,11 +16,15 @@ class DailyScrumKamer extends Kamer {
     public DailyScrumKamer(Speler speler, Scanner scanner) {
         super(speler, scanner);
         this.vraagStrategie = new DailyScrumVragen();
+        this.hintProvider = new RandomHintProvider(
+                new DailyScrumHelpHintProvider(),
+                new DailyScrumFunnyHintProvider()
+        );
     }
 
     @Override
     public boolean start() {
-        toonHint();
+        AssistentActieHandler.activeerAssistent(this);
         System.out.println("Welkom in de Daily Scrum kamer!");
 
         // ➤ Joker prompt voor KeyJoker of ReviewKeyJoker bovenaan (1x per kamer)
@@ -133,11 +138,16 @@ class ScrumBoardKamer extends Kamer {
     public ScrumBoardKamer(Speler speler, Scanner scanner) {
         super(speler, scanner);
         this.vraagStrategie = new ScrumBoardVragen();
+        this.hintProvider = new RandomHintProvider(
+                new ScrumBoardHelpHintProvider(),
+                new ScrumBoardFunnyHintProvider()
+        );
     }
+
 
     @Override
     public boolean start() {
-        toonHint();
+        AssistentActieHandler.activeerAssistent(this);
         System.out.println("Welkom in de Scrum Board kamer!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
@@ -213,11 +223,16 @@ class SprintPlanningKamer extends Kamer {
     public SprintPlanningKamer(Speler speler, Scanner scanner) {
         super(speler, scanner);
         this.vraagStrategie = new SprintPlanningVragen();
+        this.hintProvider = new RandomHintProvider(
+                new SprintPlanningHelpHintProvider(),
+                new SprintPlanningFunnyHintProvider()
+        );
     }
+
 
     @Override
     public boolean start() {
-        toonHint();
+        AssistentActieHandler.activeerAssistent(this);
         System.out.println("Welkom bij de Sprintplanning Kamer!");
         System.out.println("Beantwoord de vragen juist om door te gaan. Fout? Scope Creep verschijnt!");
 
@@ -298,11 +313,16 @@ class SprintRetrospectiveKamer extends Kamer {
     public SprintRetrospectiveKamer(Speler speler, Scanner scanner) {
         super(speler, scanner);
         this.vraagStrategie = new SprintRetrospectiveVragen();
+        this.hintProvider = new RandomHintProvider(
+                new SprintRetrospectiveHelpHintProvider(),
+                new SprintRetrospectiveFunnyHintProvider()
+        );
     }
+
 
     @Override
     public boolean start() {
-        toonHint();
+        AssistentActieHandler.activeerAssistent(this);
         System.out.println("Welkom in de Sprint Retrospective kamer!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
@@ -378,11 +398,16 @@ class SprintReviewKamer extends Kamer {
     public SprintReviewKamer(Speler speler, Scanner scanner) {
         super(speler, scanner);
         this.vraagStrategie = new SprintReviewVragen();
+        this.hintProvider = new RandomHintProvider(
+                new SprintReviewHelpHintProvider(),
+                new SprintReviewFunnyHintProvider()
+        );
     }
+
 
     @Override
     public boolean start() {
-        toonHint();
+        AssistentActieHandler.activeerAssistent(this);
         System.out.println("Welkom in de Sprint Review kamer!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
@@ -480,9 +505,18 @@ class FinaleTiakamer extends Kamer {
 
     @Override
     public boolean start() {
-        toonHint();
+        vraagAssistentGebruik();
         return launchMinigame();
     }
+
+    private void vraagAssistentGebruik() {
+        System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
+        String antwoord = scanner.nextLine().trim().toLowerCase();
+        if (antwoord.equals("ja")) {
+            AssistentActieHandler.activeerAssistent(this);
+        }
+    }
+
 
     private boolean launchMinigame() {
         gui = new JFrame("Ontdek TIA");
@@ -583,11 +617,14 @@ class VoorwerpenKamer extends Kamer {
         super(speler, scanner);
         this.sleutel = new Sleutel("Escape Sleutel");
         this.puzzel = new Puzzel("Wat is de derde Scrum waarde na Focus en Openheid?", "Respect");
+        this.hintProvider = new RandomHintProvider(
+                new VoorwerpenKamerHelpHintProvider(),
+                new VoorwerpenKamerFunnyHintProvider());
     }
 
     @Override
     public boolean start() {
-        toonHint();
+        AssistentActieHandler.activeerAssistent(this);
 
         System.out.println("🧩 Je komt een raadsel tegen op een bord...");
         puzzel.startInteractie(scanner);

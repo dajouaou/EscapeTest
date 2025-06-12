@@ -6,4 +6,3 @@ public class Zwaard implements Weapon {
         System.out.println("🗡️ Je valt het monster aan met het zwaard!");
     }
 }
-//testing
