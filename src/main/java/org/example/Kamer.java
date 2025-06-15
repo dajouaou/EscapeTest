@@ -79,15 +79,33 @@ public abstract class Kamer {
         System.out.println("❌ Niet gelukt. Probeer opnieuw.");
     }
 
+    protected int hintTeller = 0;
+    private final int MAX_HINTS = 3;
+
     protected boolean vraagHintNaFout() {
+        if (hintProvider == null) return false;
+
+        if (hintTeller >= MAX_HINTS) {
+            System.out.println("🚫 Je hebt het maximum aantal hints bereikt.");
+            return false;
+        }
+
         System.out.print("Wil je een hint? (ja/nee): ");
         String antwoord = scanner.nextLine().trim().toLowerCase();
-        if (antwoord.equals("ja")) {
-            System.out.println("💡 Hint: " + hintProvider.getHint());
-            return true;
+
+        switch (antwoord) {
+            case "ja":
+                hintTeller++;
+                System.out.println("💡 Hint: " + hintProvider.getHint());
+                return true;
+            case "nee":
+                return false;
+            default:
+                System.out.println("❌ Ongeldige invoer. Typ 'ja' of 'nee'.");
+                return vraagHintNaFout(); // Herhaal
         }
-        return false;
     }
+
 
     protected char vraagAntwoord(Scanner scanner, int maxOpties) {
         while (true) {
