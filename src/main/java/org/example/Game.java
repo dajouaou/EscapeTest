@@ -127,4 +127,12 @@ public class Game {
     public Speler getSpeler() {
         return speler;
     }
+
+    // --- TOEGEVOEGD ---
+    public Kamer getKamer(int kamerNummer) {
+        if (kamerNummer < 1 || kamerNummer > kamers.size()) {
+            throw new IllegalArgumentException("Kamer " + kamerNummer + " bestaat niet!");
+        }
+        return kamers.get(kamerNummer - 1);
+    }
 }

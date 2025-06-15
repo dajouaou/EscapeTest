@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import javax.swing.*;
 import java.awt.*;
 
-
-
 class DailyScrumKamer extends Kamer {
     private final VraagStrategieen vraagStrategie;
 
@@ -129,6 +127,12 @@ class DailyScrumKamer extends Kamer {
         System.out.println("🔑 De KeyJoker opent een extra sleutel in deze kamer!");
         speler.voegMuntenToe(1); // of een andere beloning
     }
+
+    // --- TOEGEVOEGD ---
+    @Override
+    public List<Vraag> getVragen() {
+        return vraagStrategie.getVragen();
+    }
 }
 
 
@@ -214,6 +218,12 @@ class ScrumBoardKamer extends Kamer {
         }
 
         return true;
+    }
+
+    // --- TOEGEVOEGD ---
+    @Override
+    public List<Vraag> getVragen() {
+        return vraagStrategie.getVragen();
     }
 }
 
@@ -305,6 +315,12 @@ class SprintPlanningKamer extends Kamer {
 
         return true;
     }
+
+    // --- TOEGEVOEGD ---
+    @Override
+    public List<Vraag> getVragen() {
+        return vraagStrategie.getVragen();
+    }
 }
 
 class SprintRetrospectiveKamer extends Kamer {
@@ -389,6 +405,12 @@ class SprintRetrospectiveKamer extends Kamer {
         }
 
         return true;
+    }
+
+    // --- TOEGEVOEGD ---
+    @Override
+    public List<Vraag> getVragen() {
+        return vraagStrategie.getVragen();
     }
 }
 
@@ -481,6 +503,11 @@ class SprintReviewKamer extends Kamer {
         speler.voegMuntenToe(1); // of iets unieks
     }
 
+    // --- TOEGEVOEGD ---
+    @Override
+    public List<Vraag> getVragen() {
+        return vraagStrategie.getVragen();
+    }
 }
 
 class FinaleTiakamer extends Kamer {
@@ -607,6 +634,12 @@ class FinaleTiakamer extends Kamer {
             return false;
         }
     }
+
+    // --- TOEGEVOEGD ---
+    @Override
+    public List<Vraag> getVragen() {
+        return vraagStrategie.getVragen();
+    }
 }
 
 class VoorwerpenKamer extends Kamer {
@@ -635,5 +668,5 @@ class VoorwerpenKamer extends Kamer {
         return true;
     }
 
+    // VoorwerpenKamer heeft geen vragen, dus hier géén getVragen nodig!
 }
-

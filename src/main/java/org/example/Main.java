@@ -1,11 +1,11 @@
 package org.example;
 
 import java.util.Scanner;
-
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         DatabaseManager db = new DatabaseManager();
+
 
         System.out.println("Welkom bij Scrum Escape Building!");
 
