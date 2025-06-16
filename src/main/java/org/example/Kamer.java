@@ -1,8 +1,9 @@
-
 package org.example;
 
 import java.util.Scanner;
-import org.example.Game;
+import java.util.Collections;
+import java.util.List;
+
 public abstract class Kamer {
     protected final Speler speler;
     protected final Scanner scanner;
@@ -13,6 +14,7 @@ public abstract class Kamer {
         this.scanner = scanner;
         this.hintProvider = null;
     }
+
     public HintProvider getHintProvider() {
         return this.hintProvider;
     }
@@ -21,6 +23,14 @@ public abstract class Kamer {
         this.hintProvider = hintProvider;
     }
 
+    public Speler getSpeler() {
+        return speler;
+    }
+
+    // Default: geen vragen. Override in kamers met vragen!
+    public List<Vraag> getVragen() {
+        return Collections.emptyList();
+    }
 
     protected void toonHint() {
         System.out.println("💡 Denk goed na voordat je antwoordt! Typ 'ja' bij een hintvraag voor hulp.");
@@ -30,13 +40,25 @@ public abstract class Kamer {
         // standaardkamers doen niets
     }
 
-
     public final boolean speelKamer() {
         toonIntro();
 
         // 🔐 Joker pas hier vragen na uitleg
         if (speler.getJoker() == null) {
-            Game.kiesJokerVoorSpeler(speler, scanner);
+            int kamerNummer = speler.getHuidigeKamer();
+            if (kamerNummer == 2 || kamerNummer == 4) {
+                Game.kiesJokerVoorSpeler(speler, scanner);
+            } else {
+                System.out.println("\n🃏 Je mag alleen de HintJoker kiezen in deze kamer.");
+                System.out.print("Wil je de HintJoker kiezen? (ja/nee): ");
+                String antwoord = scanner.nextLine().trim().toLowerCase();
+                if (antwoord.equals("ja")) {
+                    speler.kiesJoker(new HintJoker());
+                    System.out.println("✅ Je hebt gekozen voor de HintJoker.");
+                } else {
+                    System.out.println("Je hebt niet voor de HintJoker gekozen.");
+                }
+            }
         }
 
         boolean geslaagd = start();
@@ -49,8 +71,6 @@ public abstract class Kamer {
 
         return geslaagd;
     }
-
-
 
     protected void toonIntro() {
         System.out.println("\n📍 Je betreedt een kamer...");
@@ -105,7 +125,6 @@ public abstract class Kamer {
                 return vraagHintNaFout(); // Herhaal
         }
     }
-
 
     protected char vraagAntwoord(Scanner scanner, int maxOpties) {
         while (true) {
