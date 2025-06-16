@@ -16,12 +16,24 @@ public class Monster implements GameObserver {
         if ("fout".equalsIgnoreCase(resultaat)) {
             String huidigeKamerNaam = speler.getKamerNaam();
             if (kamerNaam.equalsIgnoreCase(huidigeKamerNaam)) {
-                versperWeg();
+                // 🔥 Check of speler zwaard heeft
+                if (speler.heeftZwaard()) {
+                    System.out.print("⚔️ Je hebt een zwaard! Wil je het monster aanvallen? (ja/nee): ");
+                    String keuze = new java.util.Scanner(System.in).nextLine().trim().toLowerCase();
+                    if (keuze.equals("ja")) {
+                        speler.gebruikZwaard(); // hier roepen we de attack() aan
+                        return;
+                    } else {
+                        System.out.println("😨 Je kiest ervoor om niet aan te vallen...");
+                    }
+                }
+                versperWeg();  // originele monsterreactie
             }
         } else if ("goed".equalsIgnoreCase(resultaat)) {
             System.out.println("👹 Monster verdwijnt.");
         }
     }
+
 
     public void versperWeg() {
         gedrag.reageer();
