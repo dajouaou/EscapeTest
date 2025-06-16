@@ -76,6 +76,10 @@ public class Speler {
         this.heeftZwaard = true;
         System.out.println("🗡️ Je hebt een zwaard opgepakt!");
     }
+    public void gebruikZwaard() {
+        Weapon zwaard = new Zwaard(); // of sla een verwijzing op als je hem wil onthouden
+        zwaard.attack(); // dit doet iets simpels zoals "Monster verslagen!"
+    }
 
     public boolean heeftZwaard() {
         return this.heeftZwaard;
