@@ -229,7 +229,6 @@ class ScrumBoardKamer extends Kamer {
 
 class SprintPlanningKamer extends Kamer {
     private final VraagStrategieen vraagStrategie;
-
     public SprintPlanningKamer(Speler speler, Scanner scanner) {
         super(speler, scanner);
         this.vraagStrategie = new SprintPlanningVragen();
@@ -238,7 +237,6 @@ class SprintPlanningKamer extends Kamer {
                 new SprintPlanningFunnyHintProvider()
         );
     }
-
 
     @Override
     public boolean start() {
