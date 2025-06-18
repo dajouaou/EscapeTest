@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import javax.swing.*;
 import java.awt.*;
 
+
 class DailyScrumKamer extends Kamer {
     private final VraagStrategieen vraagStrategie;
 
@@ -24,21 +25,6 @@ class DailyScrumKamer extends Kamer {
     public boolean start() {
         System.out.println("Welkom in de Daily Scrum kamer!");
 
-        // Assistent met ja/nee
-        while (true) {
-            System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("ja")) {
-                AssistentActieHandler.toonEducatiefHulpmiddel(this);
-                AssistentActieHandler.toonMotivatie(this);
-                break;
-            } else if (input.equals("nee")) {
-                // Geen assistent; ga direct door
-                break;
-            } else {
-                System.out.println("Ongeldige invoer. Typ 'ja' of 'nee'.");
-            }
-        }
         // ➤ Joker prompt voor KeyJoker of ReviewKeyJoker bovenaan (1x per kamer)
         Joker actieveJoker = speler.getJoker();
         if ((actieveJoker instanceof KeyJoker || actieveJoker instanceof ReviewKeyJoker) && !speler.isJokerGebruikt()) {
@@ -53,70 +39,111 @@ class DailyScrumKamer extends Kamer {
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
         boolean[] vragenCorrect = new boolean[vragen.size()];
 
+        // HOOFDLOOP: alle vragen
         for (int i = 0; i < vragen.size(); i++) {
             Vraag vraag = vragen.get(i);
-            System.out.println(vraag.getVraag());
-
-            // ➤ HintJoker prompt per vraag
-            if (actieveJoker instanceof HintJoker && !speler.isJokerGebruikt()) {
-                System.out.print("Wil je je HintJoker gebruiken voor deze vraag? (ja/nee): ");
-                String gebruik = scanner.nextLine().trim().toLowerCase();
-                if (gebruik.equals("ja")) {
-                    speler.gebruikJoker(this); // activeert Hint tonen
-                }
-            }
-
+            System.out.println();
+            System.out.println("Vraag " + (i+1) + ": " + vraag.getVraag());
             for (String optie : vraag.getOpties()) {
                 System.out.println(optie);
             }
+            System.out.println("Tip: Typ 'assistent' als je vastzit voor uitleg & motivatie!");
 
-            char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
+            // --- INVOERLOOP VOOR ASSISTENT & ANTWOORD ---
+            while (true) {
+                System.out.print("Jouw antwoord: ");
+                String antwoordInput = scanner.nextLine().trim().toLowerCase();
 
-            if (antwoord == vraag.getCorrectAntwoord()) {
-                System.out.println("✅ Correct!");
-                speler.notifyGameObservers("goed");
-                vragenCorrect[i] = true;
-            } else {
-                System.out.println("❌ Fout!");
-                speler.notifyGameObservers("fout");
-                foutBeantwoordeVragen.add(i);
-                vraagHintNaFout();
+                if (antwoordInput.equals("assistent")) {
+                    AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                    AssistentActieHandler.toonMotivatie(this);
+                    continue; // mag daarna opnieuw antwoord geven
+                }
+
+                if (antwoordInput.length() == 1) {
+                    char antwoord = Character.toUpperCase(antwoordInput.charAt(0));
+                    if (antwoord >= 'A' && antwoord < ('A' + vraag.getOpties().length)) {
+                        // Joker check
+                        if (actieveJoker instanceof HintJoker && !speler.isJokerGebruikt()) {
+                            System.out.print("Wil je je HintJoker gebruiken voor deze vraag? (ja/nee): ");
+                            String gebruik = scanner.nextLine().trim().toLowerCase();
+                            if (gebruik.equals("ja")) {
+                                speler.gebruikJoker(this);
+                            }
+                        }
+
+                        // Antwoord checken
+                        if (antwoord == vraag.getCorrectAntwoord()) {
+                            System.out.println("✅ Correct!");
+                            speler.notifyGameObservers("goed");
+                            vragenCorrect[i] = true;
+                        } else {
+                            System.out.println("❌ Fout!");
+                            speler.notifyGameObservers("fout");
+                            foutBeantwoordeVragen.add(i);
+                            vraagHintNaFout();
+                        }
+                        break; // naar volgende vraag
+                    }
+                }
+                System.out.println("Ongeldige invoer. Typ A, B, C... of 'assistent'.");
             }
         }
 
+        // OPNIEUW PROBEREN VAN FOUTE VRAGEN (zelfde assistent-optie!)
         while (!foutBeantwoordeVragen.isEmpty() && wilOpnieuwProberen(scanner)) {
             List<Integer> nogFout = new ArrayList<>();
             for (int index : foutBeantwoordeVragen) {
                 Vraag vraag = vragen.get(index);
-                System.out.println(vraag.getVraag());
-
-                if (actieveJoker instanceof HintJoker && !speler.isJokerGebruikt()) {
-                    System.out.print("Wil je je HintJoker gebruiken voor deze vraag? (ja/nee): ");
-                    String gebruik = scanner.nextLine().trim().toLowerCase();
-                    if (gebruik.equals("ja")) {
-                        speler.gebruikJoker(this);
-                    }
-                }
-
+                System.out.println();
+                System.out.println("Opnieuw: " + vraag.getVraag());
                 for (String optie : vraag.getOpties()) {
                     System.out.println(optie);
                 }
+                System.out.println("Tip: Typ 'assistent' als je vastzit voor uitleg & motivatie!");
 
-                char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
-                if (antwoord == vraag.getCorrectAntwoord()) {
-                    System.out.println("✅ Correct!");
-                    speler.notifyGameObservers("goed");
-                    vragenCorrect[index] = true;
-                } else {
-                    System.out.println("❌ Nog steeds fout!");
-                    speler.notifyGameObservers("fout");
-                    nogFout.add(index);
-                    vraagHintNaFout();
+                while (true) {
+                    System.out.print("Jouw antwoord: ");
+                    String antwoordInput = scanner.nextLine().trim().toLowerCase();
+
+                    if (antwoordInput.equals("assistent")) {
+                        AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                        AssistentActieHandler.toonMotivatie(this);
+                        continue;
+                    }
+
+                    if (antwoordInput.length() == 1) {
+                        char antwoord = Character.toUpperCase(antwoordInput.charAt(0));
+                        if (antwoord >= 'A' && antwoord < ('A' + vraag.getOpties().length)) {
+                            // Joker check
+                            if (actieveJoker instanceof HintJoker && !speler.isJokerGebruikt()) {
+                                System.out.print("Wil je je HintJoker gebruiken voor deze vraag? (ja/nee): ");
+                                String gebruik = scanner.nextLine().trim().toLowerCase();
+                                if (gebruik.equals("ja")) {
+                                    speler.gebruikJoker(this);
+                                }
+                            }
+                            // Antwoord checken
+                            if (antwoord == vraag.getCorrectAntwoord()) {
+                                System.out.println("✅ Correct!");
+                                speler.notifyGameObservers("goed");
+                                vragenCorrect[index] = true;
+                            } else {
+                                System.out.println("❌ Nog steeds fout!");
+                                speler.notifyGameObservers("fout");
+                                nogFout.add(index);
+                                vraagHintNaFout();
+                            }
+                            break;
+                        }
+                    }
+                    System.out.println("Ongeldige invoer. Typ A, B, C... of 'assistent'.");
                 }
             }
             foutBeantwoordeVragen = nogFout;
         }
 
+        // Check of alles goed is
         for (boolean correct : vragenCorrect) {
             if (!correct) {
                 return false;
@@ -143,7 +170,6 @@ class DailyScrumKamer extends Kamer {
         speler.voegMuntenToe(1); // of een andere beloning
     }
 
-    // --- TOEGEVOEGD ---
     @Override
     public List<Vraag> getVragen() {
         return vraagStrategie.getVragen();
@@ -163,26 +189,9 @@ class ScrumBoardKamer extends Kamer {
         );
     }
 
-
     @Override
     public boolean start() {
-        System.out.println("Welkom in de Scrumboard kamer!");
-
-        // Assistent met ja/nee
-        while (true) {
-            System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("ja")) {
-                AssistentActieHandler.toonEducatiefHulpmiddel(this);
-                AssistentActieHandler.toonMotivatie(this);
-                break;
-            } else if (input.equals("nee")) {
-                // Geen assistent; ga direct door
-                break;
-            } else {
-                System.out.println("Ongeldige invoer. Typ 'ja' of 'nee'.");
-            }
-        }
+        System.out.println("Welkom in de Scrum Board kamer!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -190,20 +199,38 @@ class ScrumBoardKamer extends Kamer {
 
         for (int i = 0; i < vragen.size(); i++) {
             Vraag vraag = vragen.get(i);
-            System.out.println(vraag.getVraag());
-            for (String optie : vraag.getOpties()) {
-                System.out.println(optie);
-            }
-            char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
-            if (antwoord == vraag.getCorrectAntwoord()) {
-                System.out.println("✅ Correct!");
-                speler.notifyGameObservers("goed");
-                vragenCorrect[i] = true;
-            } else {
-                System.out.println("❌ Fout!");
-                speler.notifyGameObservers("fout");
-                foutBeantwoordeVragen.add(i);
-                vraagHintNaFout();
+            System.out.println();
+            System.out.println("Vraag " + (i+1) + ": " + vraag.getVraag());
+            for (String optie : vraag.getOpties()) System.out.println(optie);
+            System.out.println("Tip: Typ 'assistent' als je vastzit voor uitleg & motivatie!");
+
+            while (true) {
+                System.out.print("Jouw antwoord: ");
+                String antwoordInput = scanner.nextLine().trim().toLowerCase();
+
+                if (antwoordInput.equals("assistent")) {
+                    AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                    AssistentActieHandler.toonMotivatie(this);
+                    continue;
+                }
+
+                if (antwoordInput.length() == 1) {
+                    char antwoord = Character.toUpperCase(antwoordInput.charAt(0));
+                    if (antwoord >= 'A' && antwoord < ('A' + vraag.getOpties().length)) {
+                        if (antwoord == vraag.getCorrectAntwoord()) {
+                            System.out.println("✅ Correct!");
+                            speler.notifyGameObservers("goed");
+                            vragenCorrect[i] = true;
+                        } else {
+                            System.out.println("❌ Fout!");
+                            speler.notifyGameObservers("fout");
+                            foutBeantwoordeVragen.add(i);
+                            vraagHintNaFout();
+                        }
+                        break;
+                    }
+                }
+                System.out.println("Ongeldige invoer. Typ A, B, C... of 'assistent'.");
             }
         }
 
@@ -211,30 +238,44 @@ class ScrumBoardKamer extends Kamer {
             List<Integer> nogFout = new ArrayList<>();
             for (int index : foutBeantwoordeVragen) {
                 Vraag vraag = vragen.get(index);
-                System.out.println(vraag.getVraag());
-                for (String optie : vraag.getOpties()) {
-                    System.out.println(optie);
-                }
-                char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
-                if (antwoord == vraag.getCorrectAntwoord()) {
-                    System.out.println("✅ Correct!");
-                    speler.notifyGameObservers("goed");
-                    vragenCorrect[index] = true;
-                } else {
-                    System.out.println("❌ Nog steeds fout!");
-                    speler.notifyGameObservers("fout");
-                    nogFout.add(index);
-                    vraagHintNaFout();
+                System.out.println();
+                System.out.println("Opnieuw: " + vraag.getVraag());
+                for (String optie : vraag.getOpties()) System.out.println(optie);
+                System.out.println("Tip: Typ 'assistent' als je vastzit voor uitleg & motivatie!");
+
+                while (true) {
+                    System.out.print("Jouw antwoord: ");
+                    String antwoordInput = scanner.nextLine().trim().toLowerCase();
+
+                    if (antwoordInput.equals("assistent")) {
+                        AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                        AssistentActieHandler.toonMotivatie(this);
+                        continue;
+                    }
+
+                    if (antwoordInput.length() == 1) {
+                        char antwoord = Character.toUpperCase(antwoordInput.charAt(0));
+                        if (antwoord >= 'A' && antwoord < ('A' + vraag.getOpties().length)) {
+                            if (antwoord == vraag.getCorrectAntwoord()) {
+                                System.out.println("✅ Correct!");
+                                speler.notifyGameObservers("goed");
+                                vragenCorrect[index] = true;
+                            } else {
+                                System.out.println("❌ Nog steeds fout!");
+                                speler.notifyGameObservers("fout");
+                                nogFout.add(index);
+                                vraagHintNaFout();
+                            }
+                            break;
+                        }
+                    }
+                    System.out.println("Ongeldige invoer. Typ A, B, C... of 'assistent'.");
                 }
             }
             foutBeantwoordeVragen = nogFout;
         }
 
-        for (boolean correct : vragenCorrect) {
-            if (!correct) {
-                return false;
-            }
-        }
+        for (boolean correct : vragenCorrect) if (!correct) return false;
 
         System.out.println("🎉 Goed gedaan! Je hebt deze kamer succesvol afgerond.");
         try {
@@ -250,7 +291,6 @@ class ScrumBoardKamer extends Kamer {
         return true;
     }
 
-    // --- TOEGEVOEGD ---
     @Override
     public List<Vraag> getVragen() {
         return vraagStrategie.getVragen();
@@ -270,24 +310,7 @@ class SprintPlanningKamer extends Kamer {
 
     @Override
     public boolean start() {
-        System.out.println("Welkom in de SprintPlanning kamer!");
-
-        // Assistent met ja/nee
-        while (true) {
-            System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("ja")) {
-                AssistentActieHandler.toonEducatiefHulpmiddel(this);
-                AssistentActieHandler.toonMotivatie(this);
-                break;
-            } else if (input.equals("nee")) {
-                // Geen assistent; ga direct door
-                break;
-            } else {
-                System.out.println("Ongeldige invoer. Typ 'ja' of 'nee'.");
-            }
-        }
-        System.out.println("Beantwoord de vragen juist om door te gaan. Fout? Scope Creep verschijnt!");
+        System.out.println("Welkom in de Sprint Planning kamer!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -295,20 +318,38 @@ class SprintPlanningKamer extends Kamer {
 
         for (int i = 0; i < vragen.size(); i++) {
             Vraag vraag = vragen.get(i);
-            System.out.println("\nVraag " + (i + 1) + ": " + vraag.getVraag());
-            for (String optie : vraag.getOpties()) {
-                System.out.println(optie);
-            }
-            char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
-            if (antwoord == vraag.getCorrectAntwoord()) {
-                System.out.println("✅ Correct!");
-                speler.notifyGameObservers("goed");
-                vragenCorrect[i] = true;
-            } else {
-                System.out.println("❌ Fout!");
-                speler.notifyGameObservers("fout");
-                foutBeantwoordeVragen.add(i);
-                vraagHintNaFout();
+            System.out.println();
+            System.out.println("Vraag " + (i+1) + ": " + vraag.getVraag());
+            for (String optie : vraag.getOpties()) System.out.println(optie);
+            System.out.println("Tip: Typ 'assistent' als je vastzit voor uitleg & motivatie!");
+
+            while (true) {
+                System.out.print("Jouw antwoord: ");
+                String antwoordInput = scanner.nextLine().trim().toLowerCase();
+
+                if (antwoordInput.equals("assistent")) {
+                    AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                    AssistentActieHandler.toonMotivatie(this);
+                    continue;
+                }
+
+                if (antwoordInput.length() == 1) {
+                    char antwoord = Character.toUpperCase(antwoordInput.charAt(0));
+                    if (antwoord >= 'A' && antwoord < ('A' + vraag.getOpties().length)) {
+                        if (antwoord == vraag.getCorrectAntwoord()) {
+                            System.out.println("✅ Correct!");
+                            speler.notifyGameObservers("goed");
+                            vragenCorrect[i] = true;
+                        } else {
+                            System.out.println("❌ Fout!");
+                            speler.notifyGameObservers("fout");
+                            foutBeantwoordeVragen.add(i);
+                            vraagHintNaFout();
+                        }
+                        break;
+                    }
+                }
+                System.out.println("Ongeldige invoer. Typ A, B, C... of 'assistent'.");
             }
         }
 
@@ -316,34 +357,44 @@ class SprintPlanningKamer extends Kamer {
             List<Integer> nogFout = new ArrayList<>();
             for (int index : foutBeantwoordeVragen) {
                 Vraag vraag = vragen.get(index);
-                System.out.println("\n" + vraag.getVraag());
-                for (String optie : vraag.getOpties()) {
-                    System.out.println(optie);
-                }
-                char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
-                if (antwoord == vraag.getCorrectAntwoord()) {
-                    System.out.println("✅ Correct!");
-                    speler.notifyGameObservers("goed");
-                    vragenCorrect[index] = true;
-                } else {
-                    System.out.println("❌ Nog steeds fout!");
-                    speler.notifyGameObservers("fout");
-                    nogFout.add(index);
-                    vraagHintNaFout();
+                System.out.println();
+                System.out.println("Opnieuw: " + vraag.getVraag());
+                for (String optie : vraag.getOpties()) System.out.println(optie);
+                System.out.println("Tip: Typ 'assistent' als je vastzit voor uitleg & motivatie!");
+
+                while (true) {
+                    System.out.print("Jouw antwoord: ");
+                    String antwoordInput = scanner.nextLine().trim().toLowerCase();
+
+                    if (antwoordInput.equals("assistent")) {
+                        AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                        AssistentActieHandler.toonMotivatie(this);
+                        continue;
+                    }
+
+                    if (antwoordInput.length() == 1) {
+                        char antwoord = Character.toUpperCase(antwoordInput.charAt(0));
+                        if (antwoord >= 'A' && antwoord < ('A' + vraag.getOpties().length)) {
+                            if (antwoord == vraag.getCorrectAntwoord()) {
+                                System.out.println("✅ Correct!");
+                                speler.notifyGameObservers("goed");
+                                vragenCorrect[index] = true;
+                            } else {
+                                System.out.println("❌ Nog steeds fout!");
+                                speler.notifyGameObservers("fout");
+                                nogFout.add(index);
+                                vraagHintNaFout();
+                            }
+                            break;
+                        }
+                    }
+                    System.out.println("Ongeldige invoer. Typ A, B, C... of 'assistent'.");
                 }
             }
             foutBeantwoordeVragen = nogFout;
         }
 
-        boolean allesGoed = true;
-        for (boolean correct : vragenCorrect) {
-            if (!correct) {
-                allesGoed = false;
-                break;
-            }
-        }
-
-        if (!allesGoed) return false;
+        for (boolean correct : vragenCorrect) if (!correct) return false;
 
         System.out.println("🎉 Alle vragen goed! Je mag door.");
         try {
@@ -359,7 +410,6 @@ class SprintPlanningKamer extends Kamer {
         return true;
     }
 
-    // --- TOEGEVOEGD ---
     @Override
     public List<Vraag> getVragen() {
         return vraagStrategie.getVragen();
@@ -378,26 +428,9 @@ class SprintRetrospectiveKamer extends Kamer {
         );
     }
 
-
     @Override
     public boolean start() {
-        System.out.println("Welkom in SprintRetrospectiveKamer!");
-
-        // Assistent met ja/nee
-        while (true) {
-            System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("ja")) {
-                AssistentActieHandler.toonEducatiefHulpmiddel(this);
-                AssistentActieHandler.toonMotivatie(this);
-                break;
-            } else if (input.equals("nee")) {
-                // Geen assistent; ga direct door
-                break;
-            } else {
-                System.out.println("Ongeldige invoer. Typ 'ja' of 'nee'.");
-            }
-        }
+        System.out.println("Welkom in Sprint Retrospective Kamer!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -405,20 +438,38 @@ class SprintRetrospectiveKamer extends Kamer {
 
         for (int i = 0; i < vragen.size(); i++) {
             Vraag vraag = vragen.get(i);
-            System.out.println(vraag.getVraag());
-            for (String optie : vraag.getOpties()) {
-                System.out.println(optie);
-            }
-            char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
-            if (antwoord == vraag.getCorrectAntwoord()) {
-                System.out.println("✅ Correct!");
-                speler.notifyGameObservers("goed");
-                vragenCorrect[i] = true;
-            } else {
-                System.out.println("❌ Fout!");
-                speler.notifyGameObservers("fout");
-                foutBeantwoordeVragen.add(i);
-                vraagHintNaFout();
+            System.out.println();
+            System.out.println("Vraag " + (i+1) + ": " + vraag.getVraag());
+            for (String optie : vraag.getOpties()) System.out.println(optie);
+            System.out.println("Tip: Typ 'assistent' als je vastzit voor uitleg & motivatie!");
+
+            while (true) {
+                System.out.print("Jouw antwoord: ");
+                String antwoordInput = scanner.nextLine().trim().toLowerCase();
+
+                if (antwoordInput.equals("assistent")) {
+                    AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                    AssistentActieHandler.toonMotivatie(this);
+                    continue;
+                }
+
+                if (antwoordInput.length() == 1) {
+                    char antwoord = Character.toUpperCase(antwoordInput.charAt(0));
+                    if (antwoord >= 'A' && antwoord < ('A' + vraag.getOpties().length)) {
+                        if (antwoord == vraag.getCorrectAntwoord()) {
+                            System.out.println("✅ Correct!");
+                            speler.notifyGameObservers("goed");
+                            vragenCorrect[i] = true;
+                        } else {
+                            System.out.println("❌ Fout!");
+                            speler.notifyGameObservers("fout");
+                            foutBeantwoordeVragen.add(i);
+                            vraagHintNaFout();
+                        }
+                        break;
+                    }
+                }
+                System.out.println("Ongeldige invoer. Typ A, B, C... of 'assistent'.");
             }
         }
 
@@ -426,30 +477,44 @@ class SprintRetrospectiveKamer extends Kamer {
             List<Integer> nogFout = new ArrayList<>();
             for (int index : foutBeantwoordeVragen) {
                 Vraag vraag = vragen.get(index);
-                System.out.println(vraag.getVraag());
-                for (String optie : vraag.getOpties()) {
-                    System.out.println(optie);
-                }
-                char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
-                if (antwoord == vraag.getCorrectAntwoord()) {
-                    System.out.println("✅ Correct!");
-                    speler.notifyGameObservers("goed");
-                    vragenCorrect[index] = true;
-                } else {
-                    System.out.println("❌ Nog steeds fout!");
-                    speler.notifyGameObservers("fout");
-                    nogFout.add(index);
-                    vraagHintNaFout();
+                System.out.println();
+                System.out.println("Opnieuw: " + vraag.getVraag());
+                for (String optie : vraag.getOpties()) System.out.println(optie);
+                System.out.println("Tip: Typ 'assistent' als je vastzit voor uitleg & motivatie!");
+
+                while (true) {
+                    System.out.print("Jouw antwoord: ");
+                    String antwoordInput = scanner.nextLine().trim().toLowerCase();
+
+                    if (antwoordInput.equals("assistent")) {
+                        AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                        AssistentActieHandler.toonMotivatie(this);
+                        continue;
+                    }
+
+                    if (antwoordInput.length() == 1) {
+                        char antwoord = Character.toUpperCase(antwoordInput.charAt(0));
+                        if (antwoord >= 'A' && antwoord < ('A' + vraag.getOpties().length)) {
+                            if (antwoord == vraag.getCorrectAntwoord()) {
+                                System.out.println("✅ Correct!");
+                                speler.notifyGameObservers("goed");
+                                vragenCorrect[index] = true;
+                            } else {
+                                System.out.println("❌ Nog steeds fout!");
+                                speler.notifyGameObservers("fout");
+                                nogFout.add(index);
+                                vraagHintNaFout();
+                            }
+                            break;
+                        }
+                    }
+                    System.out.println("Ongeldige invoer. Typ A, B, C... of 'assistent'.");
                 }
             }
             foutBeantwoordeVragen = nogFout;
         }
 
-        for (boolean correct : vragenCorrect) {
-            if (!correct) {
-                return false;
-            }
-        }
+        for (boolean correct : vragenCorrect) if (!correct) return false;
 
         System.out.println("🎉 Goed gedaan! Je hebt deze kamer succesvol afgerond.");
         try {
@@ -465,7 +530,6 @@ class SprintRetrospectiveKamer extends Kamer {
         return true;
     }
 
-    // --- TOEGEVOEGD ---
     @Override
     public List<Vraag> getVragen() {
         return vraagStrategie.getVragen();
@@ -484,26 +548,9 @@ class SprintReviewKamer extends Kamer {
         );
     }
 
-
     @Override
     public boolean start() {
         System.out.println("Welkom in de Sprint Review kamer!");
-
-        // Assistent met ja/nee
-        while (true) {
-            System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
-            String input = scanner.nextLine().trim().toLowerCase();
-            if (input.equals("ja")) {
-                AssistentActieHandler.toonEducatiefHulpmiddel(this);
-                AssistentActieHandler.toonMotivatie(this);
-                break;
-            } else if (input.equals("nee")) {
-                // Geen assistent; ga direct door
-                break;
-            } else {
-                System.out.println("Ongeldige invoer. Typ 'ja' of 'nee'.");
-            }
-        }
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -511,20 +558,38 @@ class SprintReviewKamer extends Kamer {
 
         for (int i = 0; i < vragen.size(); i++) {
             Vraag vraag = vragen.get(i);
-            System.out.println(vraag.getVraag());
-            for (String optie : vraag.getOpties()) {
-                System.out.println(optie);
-            }
-            char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
-            if (antwoord == vraag.getCorrectAntwoord()) {
-                System.out.println("✅ Correct!");
-                speler.notifyGameObservers("goed");
-                vragenCorrect[i] = true;
-            } else {
-                System.out.println("❌ Fout!");
-                speler.notifyGameObservers("fout");
-                foutBeantwoordeVragen.add(i);
-                vraagHintNaFout();
+            System.out.println();
+            System.out.println("Vraag " + (i+1) + ": " + vraag.getVraag());
+            for (String optie : vraag.getOpties()) System.out.println(optie);
+            System.out.println("Tip: Typ 'assistent' als je vastzit voor uitleg & motivatie!");
+
+            while (true) {
+                System.out.print("Jouw antwoord: ");
+                String antwoordInput = scanner.nextLine().trim().toLowerCase();
+
+                if (antwoordInput.equals("assistent")) {
+                    AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                    AssistentActieHandler.toonMotivatie(this);
+                    continue;
+                }
+
+                if (antwoordInput.length() == 1) {
+                    char antwoord = Character.toUpperCase(antwoordInput.charAt(0));
+                    if (antwoord >= 'A' && antwoord < ('A' + vraag.getOpties().length)) {
+                        if (antwoord == vraag.getCorrectAntwoord()) {
+                            System.out.println("✅ Correct!");
+                            speler.notifyGameObservers("goed");
+                            vragenCorrect[i] = true;
+                        } else {
+                            System.out.println("❌ Fout!");
+                            speler.notifyGameObservers("fout");
+                            foutBeantwoordeVragen.add(i);
+                            vraagHintNaFout();
+                        }
+                        break;
+                    }
+                }
+                System.out.println("Ongeldige invoer. Typ A, B, C... of 'assistent'.");
             }
         }
 
@@ -532,30 +597,44 @@ class SprintReviewKamer extends Kamer {
             List<Integer> nogFout = new ArrayList<>();
             for (int index : foutBeantwoordeVragen) {
                 Vraag vraag = vragen.get(index);
-                System.out.println(vraag.getVraag());
-                for (String optie : vraag.getOpties()) {
-                    System.out.println(optie);
-                }
-                char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
-                if (antwoord == vraag.getCorrectAntwoord()) {
-                    System.out.println("✅ Correct!");
-                    speler.notifyGameObservers("goed");
-                    vragenCorrect[index] = true;
-                } else {
-                    System.out.println("❌ Nog steeds fout!");
-                    speler.notifyGameObservers("fout");
-                    nogFout.add(index);
-                    vraagHintNaFout();
+                System.out.println();
+                System.out.println("Opnieuw: " + vraag.getVraag());
+                for (String optie : vraag.getOpties()) System.out.println(optie);
+                System.out.println("Tip: Typ 'assistent' als je vastzit voor uitleg & motivatie!");
+
+                while (true) {
+                    System.out.print("Jouw antwoord: ");
+                    String antwoordInput = scanner.nextLine().trim().toLowerCase();
+
+                    if (antwoordInput.equals("assistent")) {
+                        AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                        AssistentActieHandler.toonMotivatie(this);
+                        continue;
+                    }
+
+                    if (antwoordInput.length() == 1) {
+                        char antwoord = Character.toUpperCase(antwoordInput.charAt(0));
+                        if (antwoord >= 'A' && antwoord < ('A' + vraag.getOpties().length)) {
+                            if (antwoord == vraag.getCorrectAntwoord()) {
+                                System.out.println("✅ Correct!");
+                                speler.notifyGameObservers("goed");
+                                vragenCorrect[index] = true;
+                            } else {
+                                System.out.println("❌ Nog steeds fout!");
+                                speler.notifyGameObservers("fout");
+                                nogFout.add(index);
+                                vraagHintNaFout();
+                            }
+                            break;
+                        }
+                    }
+                    System.out.println("Ongeldige invoer. Typ A, B, C... of 'assistent'.");
                 }
             }
             foutBeantwoordeVragen = nogFout;
         }
 
-        for (boolean correct : vragenCorrect) {
-            if (!correct) {
-                return false;
-            }
-        }
+        for (boolean correct : vragenCorrect) if (!correct) return false;
 
         System.out.println("🎉 Goed gedaan! Je hebt deze kamer succesvol afgerond.");
         try {
@@ -570,18 +649,13 @@ class SprintReviewKamer extends Kamer {
 
         return true;
     }
-    @Override
-    public void accept(KeyJoker joker) {
-        System.out.println("🔓 Je gebruikt de KeyJoker en krijgt toegang tot een verborgen item!");
-        speler.voegMuntenToe(1); // of iets unieks
-    }
 
-    // --- TOEGEVOEGD ---
     @Override
     public List<Vraag> getVragen() {
         return vraagStrategie.getVragen();
     }
 }
+
 
 class FinaleTiakamer extends Kamer {
     private final javax.swing.Timer timer;
