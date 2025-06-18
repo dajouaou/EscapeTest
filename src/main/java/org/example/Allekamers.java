@@ -24,17 +24,21 @@ class DailyScrumKamer extends Kamer {
     public boolean start() {
         System.out.println("Welkom in de Daily Scrum kamer!");
 
-        // Assistent aanbieden
-        System.out.print("Typ 'assistent' voor volledige hulp of druk op enter voor tips: ");
-        String input = scanner.nextLine().trim().toLowerCase();
-        if (input.equals("assistent")) {
-            AssistentActieHandler.activeerAssistent(this);
-        } else if (input.isEmpty()) {
-            // Alleen tips en motivatie tonen
-            AssistentActieHandler.toonEducatiefHulpmiddel(this);
-            AssistentActieHandler.toonMotivatie(this);
+        // Assistent met ja/nee
+        while (true) {
+            System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("ja")) {
+                AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                AssistentActieHandler.toonMotivatie(this);
+                break;
+            } else if (input.equals("nee")) {
+                // Geen assistent; ga direct door
+                break;
+            } else {
+                System.out.println("Ongeldige invoer. Typ 'ja' of 'nee'.");
+            }
         }
-
         // ➤ Joker prompt voor KeyJoker of ReviewKeyJoker bovenaan (1x per kamer)
         Joker actieveJoker = speler.getJoker();
         if ((actieveJoker instanceof KeyJoker || actieveJoker instanceof ReviewKeyJoker) && !speler.isJokerGebruikt()) {
@@ -162,17 +166,22 @@ class ScrumBoardKamer extends Kamer {
 
     @Override
     public boolean start() {
-        System.out.println("Welkom in de  Scrum board kamer!");
+        System.out.println("Welkom in de Scrumboard kamer!");
 
-        // Assistent aanbieden
-        System.out.print("Typ 'assistent' voor volledige hulp of druk op enter voor tips: ");
-        String input = scanner.nextLine().trim().toLowerCase();
-        if (input.equals("assistent")) {
-            AssistentActieHandler.activeerAssistent(this);
-        } else if (input.isEmpty()) {
-            // Alleen tips en motivatie tonen
-            AssistentActieHandler.toonEducatiefHulpmiddel(this);
-            AssistentActieHandler.toonMotivatie(this);
+        // Assistent met ja/nee
+        while (true) {
+            System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("ja")) {
+                AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                AssistentActieHandler.toonMotivatie(this);
+                break;
+            } else if (input.equals("nee")) {
+                // Geen assistent; ga direct door
+                break;
+            } else {
+                System.out.println("Ongeldige invoer. Typ 'ja' of 'nee'.");
+            }
         }
 
         List<Vraag> vragen = vraagStrategie.getVragen();
@@ -261,16 +270,22 @@ class SprintPlanningKamer extends Kamer {
 
     @Override
     public boolean start() {
-        System.out.println("Welkom in de SprintPlnningKamer!");
-        // Assistent aanbieden
-        System.out.print("Typ 'assistent' voor volledige hulp of druk op enter voor tips: ");
-        String input = scanner.nextLine().trim().toLowerCase();
-        if (input.equals("assistent")) {
-            AssistentActieHandler.activeerAssistent(this);
-        } else if (input.isEmpty()) {
-            // Alleen tips en motivatie tonen
-            AssistentActieHandler.toonEducatiefHulpmiddel(this);
-            AssistentActieHandler.toonMotivatie(this);
+        System.out.println("Welkom in de SprintPlanning kamer!");
+
+        // Assistent met ja/nee
+        while (true) {
+            System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("ja")) {
+                AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                AssistentActieHandler.toonMotivatie(this);
+                break;
+            } else if (input.equals("nee")) {
+                // Geen assistent; ga direct door
+                break;
+            } else {
+                System.out.println("Ongeldige invoer. Typ 'ja' of 'nee'.");
+            }
         }
         System.out.println("Beantwoord de vragen juist om door te gaan. Fout? Scope Creep verschijnt!");
 
@@ -368,16 +383,21 @@ class SprintRetrospectiveKamer extends Kamer {
     public boolean start() {
         System.out.println("Welkom in SprintRetrospectiveKamer!");
 
-        // Assistent aanbieden
-        System.out.print("Typ 'assistent' voor volledige hulp of druk op enter voor tips: ");
-        String input = scanner.nextLine().trim().toLowerCase();
-        if (input.equals("assistent")) {
-            AssistentActieHandler.activeerAssistent(this);
-        } else if (input.isEmpty()) {
-            // Alleen tips en motivatie tonen
-            AssistentActieHandler.toonEducatiefHulpmiddel(this);
-            AssistentActieHandler.toonMotivatie(this);
-        };
+        // Assistent met ja/nee
+        while (true) {
+            System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("ja")) {
+                AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                AssistentActieHandler.toonMotivatie(this);
+                break;
+            } else if (input.equals("nee")) {
+                // Geen assistent; ga direct door
+                break;
+            } else {
+                System.out.println("Ongeldige invoer. Typ 'ja' of 'nee'.");
+            }
+        }
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -467,17 +487,22 @@ class SprintReviewKamer extends Kamer {
 
     @Override
     public boolean start() {
-        System.out.println("Welkom in de SprintReviewKamer!");
+        System.out.println("Welkom in de Sprint Review kamer!");
 
-        // Assistent aanbieden
-        System.out.print("Typ 'assistent' voor volledige hulp of druk op enter voor tips: ");
-        String input = scanner.nextLine().trim().toLowerCase();
-        if (input.equals("assistent")) {
-            AssistentActieHandler.activeerAssistent(this);
-        } else if (input.isEmpty()) {
-            // Alleen tips en motivatie tonen
-            AssistentActieHandler.toonEducatiefHulpmiddel(this);
-            AssistentActieHandler.toonMotivatie(this);
+        // Assistent met ja/nee
+        while (true) {
+            System.out.print("Wil je de assistent gebruiken? (ja/nee): ");
+            String input = scanner.nextLine().trim().toLowerCase();
+            if (input.equals("ja")) {
+                AssistentActieHandler.toonEducatiefHulpmiddel(this);
+                AssistentActieHandler.toonMotivatie(this);
+                break;
+            } else if (input.equals("nee")) {
+                // Geen assistent; ga direct door
+                break;
+            } else {
+                System.out.println("Ongeldige invoer. Typ 'ja' of 'nee'.");
+            }
         }
 
         List<Vraag> vragen = vraagStrategie.getVragen();
