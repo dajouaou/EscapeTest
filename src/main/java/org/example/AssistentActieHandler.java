@@ -20,11 +20,11 @@ public class AssistentActieHandler {
         }
     }
 
-    private static void toonEducatiefHulpmiddel(Kamer kamer) {
+    static void toonEducatiefHulpmiddel(Kamer kamer) {
         System.out.println("📘 Hulpmiddel: Lees de vraag goed, evalueer de opties en pas je Scrum-kennis toe.");
     }
 
-    private static void toonMotivatie(Kamer kamer) {
+    static void toonMotivatie(Kamer kamer) {
         System.out.println("💪 Je denkt als een echte Product Owner!");
     }
 }

@@ -22,8 +22,18 @@ class DailyScrumKamer extends Kamer {
 
     @Override
     public boolean start() {
-        AssistentActieHandler.activeerAssistent(this);
         System.out.println("Welkom in de Daily Scrum kamer!");
+
+        // Assistent aanbieden
+        System.out.print("Typ 'assistent' voor volledige hulp of druk op enter voor tips: ");
+        String input = scanner.nextLine().trim().toLowerCase();
+        if (input.equals("assistent")) {
+            AssistentActieHandler.activeerAssistent(this);
+        } else if (input.isEmpty()) {
+            // Alleen tips en motivatie tonen
+            AssistentActieHandler.toonEducatiefHulpmiddel(this);
+            AssistentActieHandler.toonMotivatie(this);
+        }
 
         // ➤ Joker prompt voor KeyJoker of ReviewKeyJoker bovenaan (1x per kamer)
         Joker actieveJoker = speler.getJoker();
@@ -57,6 +67,7 @@ class DailyScrumKamer extends Kamer {
             }
 
             char antwoord = vraagAntwoord(scanner, vraag.getOpties().length);
+
             if (antwoord == vraag.getCorrectAntwoord()) {
                 System.out.println("✅ Correct!");
                 speler.notifyGameObservers("goed");
@@ -151,8 +162,18 @@ class ScrumBoardKamer extends Kamer {
 
     @Override
     public boolean start() {
-        AssistentActieHandler.activeerAssistent(this);
-        System.out.println("Welkom in de Scrum Board kamer!");
+        System.out.println("Welkom in de  Scrum board kamer!");
+
+        // Assistent aanbieden
+        System.out.print("Typ 'assistent' voor volledige hulp of druk op enter voor tips: ");
+        String input = scanner.nextLine().trim().toLowerCase();
+        if (input.equals("assistent")) {
+            AssistentActieHandler.activeerAssistent(this);
+        } else if (input.isEmpty()) {
+            // Alleen tips en motivatie tonen
+            AssistentActieHandler.toonEducatiefHulpmiddel(this);
+            AssistentActieHandler.toonMotivatie(this);
+        }
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -240,8 +261,17 @@ class SprintPlanningKamer extends Kamer {
 
     @Override
     public boolean start() {
-        AssistentActieHandler.activeerAssistent(this);
-        System.out.println("Welkom bij de Sprintplanning Kamer!");
+        System.out.println("Welkom in de SprintPlnningKamer!");
+        // Assistent aanbieden
+        System.out.print("Typ 'assistent' voor volledige hulp of druk op enter voor tips: ");
+        String input = scanner.nextLine().trim().toLowerCase();
+        if (input.equals("assistent")) {
+            AssistentActieHandler.activeerAssistent(this);
+        } else if (input.isEmpty()) {
+            // Alleen tips en motivatie tonen
+            AssistentActieHandler.toonEducatiefHulpmiddel(this);
+            AssistentActieHandler.toonMotivatie(this);
+        }
         System.out.println("Beantwoord de vragen juist om door te gaan. Fout? Scope Creep verschijnt!");
 
         List<Vraag> vragen = vraagStrategie.getVragen();
@@ -336,8 +366,18 @@ class SprintRetrospectiveKamer extends Kamer {
 
     @Override
     public boolean start() {
-        AssistentActieHandler.activeerAssistent(this);
-        System.out.println("Welkom in de Sprint Retrospective kamer!");
+        System.out.println("Welkom in SprintRetrospectiveKamer!");
+
+        // Assistent aanbieden
+        System.out.print("Typ 'assistent' voor volledige hulp of druk op enter voor tips: ");
+        String input = scanner.nextLine().trim().toLowerCase();
+        if (input.equals("assistent")) {
+            AssistentActieHandler.activeerAssistent(this);
+        } else if (input.isEmpty()) {
+            // Alleen tips en motivatie tonen
+            AssistentActieHandler.toonEducatiefHulpmiddel(this);
+            AssistentActieHandler.toonMotivatie(this);
+        };
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -427,8 +467,18 @@ class SprintReviewKamer extends Kamer {
 
     @Override
     public boolean start() {
-        AssistentActieHandler.activeerAssistent(this);
-        System.out.println("Welkom in de Sprint Review kamer!");
+        System.out.println("Welkom in de SprintReviewKamer!");
+
+        // Assistent aanbieden
+        System.out.print("Typ 'assistent' voor volledige hulp of druk op enter voor tips: ");
+        String input = scanner.nextLine().trim().toLowerCase();
+        if (input.equals("assistent")) {
+            AssistentActieHandler.activeerAssistent(this);
+        } else if (input.isEmpty()) {
+            // Alleen tips en motivatie tonen
+            AssistentActieHandler.toonEducatiefHulpmiddel(this);
+            AssistentActieHandler.toonMotivatie(this);
+        }
 
         List<Vraag> vragen = vraagStrategie.getVragen();
         List<Integer> foutBeantwoordeVragen = new ArrayList<>();
@@ -532,6 +582,7 @@ class FinaleTiakamer extends Kamer {
     public boolean start() {
         vraagAssistentGebruik();
         return launchMinigame();
+
     }
 
     private void vraagAssistentGebruik() {
